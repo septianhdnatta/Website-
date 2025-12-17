@@ -1,4 +1,3 @@
-
 <!-- FILE: features.html -->
 <!doctype html>
 <html lang="id">
@@ -98,9 +97,17 @@
     }
     .reveal{ opacity:0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
+
     .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
     .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
     .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
+
+    .clamp3{
+      display:-webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow:hidden;
+    }
   </style>
 </head>
 
@@ -157,7 +164,9 @@
             <div class="min-w-0">
               <div class="text-xs text-white/55">Features</div>
               <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Status board</h1>
-              <p class="mt-3 text-white/70 max-w-2xl">Statistik di atas, dan fitur dikelompokkan berdasarkan tag.</p>
+              <p class="mt-3 text-white/70 max-w-2xl">
+                Statistik di atas, dan fitur dikelompokkan berdasarkan tag: NEW, UPDATE, ERROR, MAINTENANCE.
+              </p>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -173,6 +182,7 @@
                 <span class="text-sm font-semibold">Reset NEW</span>
               </button>
 
+              <!-- Hide long link text, only a button -->
               <button id="btnOpenJson"
                 class="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
                 <span class="h-4 w-4" data-lucide="link"></span>
@@ -350,8 +360,8 @@
       "https://raw.githubusercontent.com/septianhdnatta/Website-/main/db/feature.json"
     ];
 
-    const NEW_TTL_MS = 24 * 60 * 60 * 1000;  // 24 jam
-    const NEW_LIMIT = 2;                     // tampil max 1-2
+    const NEW_TTL_MS = 24 * 60 * 60 * 1000; // 24 jam
+    const NEW_LIMIT = 2;                    // tampil max 1-2
     const SEEN_TS_KEY = "astrionhub_feature_first_seen_ts_v1";
 
     const $ = (id) => document.getElementById(id);
@@ -373,7 +383,7 @@
       return safeText(item.id ?? item.key ?? item.slug ?? item.code ?? item.title ?? item.name ?? idx).trim();
     }
 
-    function getTag(item) {
+    function getRawTag(item) {
       let t = item.tag ?? item.status ?? item.badge ?? item.type ?? "";
       if (Array.isArray(t)) t = t[0] ?? "";
       t = String(t).toLowerCase().trim();
@@ -408,7 +418,6 @@
     }
 
     function pruneSeenMap(obj, nowMs) {
-      // hanya simpan entry yang masih relevan untuk TTL NEW
       const out = {};
       for (const [k, v] of Object.entries(obj)) {
         const n = Number(v);
@@ -455,7 +464,7 @@
                 <div class="font-semibold text-white/90 truncate">${title}</div>
                 ${badgeHTML(item.__tag)}
               </div>
-              <div class="mt-1 text-sm text-white/65 line-clamp-3">${desc || "—"}</div>
+              <div class="mt-1 text-sm text-white/65 clamp3">${desc || "—"}</div>
             </div>
 
             ${link ? `<span class="h-4 w-4 text-white/55 mt-1" data-lucide="arrow-up-right"></span>` : ""}
@@ -526,46 +535,54 @@
           setStats({ total: 0, nNew: 0, nUpdate: 0, nErr: 0, nMaint: 0 });
           setBadges({ nNew: 0, nUpdate: 0, nErr: 0, nMaint: 0 });
           show($("tagBoard"), true);
+          lucide.createIcons();
+          $("btnOpenJson").onclick = () => window.open(base, "_blank", "noopener,noreferrer");
           return;
         }
 
-        // decorate items with key + tag
+        // Decorate items + compute first-seen
         const items = itemsRaw.map((it, idx) => {
           const key = getFeatureKey(it, idx);
-          const tag = getTag(it);
-          return { ...it, __key: key, __tag: tag, __idx: idx };
+          if (seenMap[key] === undefined) seenMap[key] = now; // first time seen
+          return { ...it, __key: key, __idx: idx };
         });
 
-        // "NEW" logic: item dianggap kandidat NEW jika:
-        // - tag dari json = new, atau
-        // - item belum pernah terlihat (belum ada di seenMap)
-        const newCandidates = [];
-        for (const it of items) {
-          const explicitNew = it.__tag === "new";
-          const neverSeen = seenMap[it.__key] === undefined;
+        // Final tag priority:
+        // 1) error/maintenance from JSON always wins
+        // 2) explicit new from JSON
+        // 3) unseen within 24h => new
+        // 4) else update
+        const decorated = items.map(it => {
+          const rawTag = getRawTag(it);
+          const firstSeen = Number(seenMap[it.__key] ?? now);
+          const ageOk = (now - firstSeen) <= NEW_TTL_MS;
 
-          if (explicitNew || neverSeen) {
-            if (seenMap[it.__key] === undefined) seenMap[it.__key] = now; // stamp pertama kali muncul
-            const age = now - Number(seenMap[it.__key]);
-            if (age <= NEW_TTL_MS) newCandidates.push(it);
-          }
-        }
+          let finalTag = "update";
+          if (rawTag === "error" || rawTag === "maintenance") finalTag = rawTag;
+          else if (rawTag === "new") finalTag = ageOk ? "new" : "update";
+          else if (ageOk && firstSeen === now) finalTag = "new"; // newly discovered this load
+          else finalTag = rawTag || "update";
 
-        // Sort NEW by first seen (recent first) then limit to max 2
-newCandidates.sort((a, b) => (seenMap[b.__key] ?? 0) - (seenMap[a.__key] ?? 0));
-const newShow = newCandidates.slice(0, NEW_LIMIT);
+          return { ...it, __tag: finalTag, __rawTag: rawTag, __firstSeen: firstSeen };
+        });
 
-// Kategorikan item lain berdasarkan tag dari JSON
-const updateList = items.filter(it => it.__tag === "update");
-const errorList  = items.filter(it => it.__tag === "error");
-const maintList  = items.filter(it => it.__tag === "maintenance");
+        // NEW candidates: finalTag new AND within TTL
+        const newCandidates = decorated.filter(it => it.__tag === "new" && (now - it.__firstSeen) <= NEW_TTL_MS);
+        newCandidates.sort((a, b) => (b.__firstSeen ?? 0) - (a.__firstSeen ?? 0));
+        const newShow = newCandidates.slice(0, NEW_LIMIT);
+        const newKeys = new Set(newShow.map(it => it.__key));
 
-// Render list NEW: hanya tampil newShow (max 2) dan auto hilang jika >24h (sudah difilter)
+        // Other lists (no duplication)
+const updateList = decorated.filter(it => it.__tag === "update" && !newKeys.has(it.__key));
+const errorList  = decorated.filter(it => it.__tag === "error" && !newKeys.has(it.__key));
+const maintList  = decorated.filter(it => it.__tag === "maintenance" && !newKeys.has(it.__key));
+
+// Render list NEW (max 2, TTL 24h)
 $("listNew").innerHTML = newShow.length
   ? newShow.map(renderItemCard).join("")
   : `<div class="text-sm text-white/55">Tidak ada NEW (24 jam terakhir).</div>`;
 
-// Render list lain
+// Render list lainnya
 $("listUpdate").innerHTML = updateList.length
   ? updateList.map(renderItemCard).join("")
   : `<div class="text-sm text-white/55">Tidak ada UPDATE.</div>`;
@@ -578,11 +595,11 @@ $("listMaint").innerHTML = maintList.length
   ? maintList.map(renderItemCard).join("")
   : `<div class="text-sm text-white/55">Tidak ada MAINTENANCE.</div>`;
 
-// Simpan seenMap yang sudah dipruning (biar yang >24h otomatis “terhapus” dari memory web)
+// Simpan seenMap yang sudah di-prune (entry >24h otomatis hilang)
 saveSeenMap(pruneSeenMap(seenMap, now));
 
-// Statistik + badge counter
-const total = items.length;
+// Statistik + badge
+const total = decorated.length;
 const nNew = newShow.length;
 const nUpdate = updateList.length;
 const nErr = errorList.length;
@@ -591,20 +608,21 @@ const nMaint = maintList.length;
 setStats({ total, nNew, nUpdate, nErr, nMaint });
 setBadges({ nNew, nUpdate, nErr, nMaint });
 
-// Info status (tanpa nampilin URL panjang)
+// Meta (tanpa nampilin URL panjang)
 $("metaInfo").textContent = `Loaded ${total} • NEW ${nNew} • UPDATE ${nUpdate} • ERROR ${nErr} • MAINT ${nMaint}`;
 $("lastUpdated").textContent = lastModified ? `Updated: ${lastModified}` : "";
 
-// Tampilkan panel
+// UI show
 show($("stateLoading"), false);
 show($("statsPanel"), true);
 show($("tagBoard"), true);
 
 // Replace icons setelah HTML di-inject
-lucide.createIcons(); // [web:18]
+lucide.createIcons();
 
-// Button: open json (tapi tidak menampilkan URL)
+// Button open JSON
 $("btnOpenJson").onclick = () => window.open(base, "_blank", "noopener,noreferrer");
+
 } catch (e) {
 show($("stateLoading"), false);
 show($("stateError"), true);
@@ -617,31 +635,40 @@ setStats({ total: 0, nNew: 0, nUpdate: 0, nErr: 1, nMaint: 0 });
 setBadges({ nNew: 0, nUpdate: 0, nErr: 1, nMaint: 0 });
 
 show($("tagBoard"), true);
-lucide.createIcons(); // [web:18]
+lucide.createIcons();
 }
 }
 
 // ===== Boot =====
 (function boot() {
-lucide.createIcons(); // [web:18]
+lucide.createIcons();
 $("year").textContent = new Date().getFullYear();
 
+// Mobile menu
 const btnMenu = $("btnMenu");
 const mobileMenu = $("mobileMenu");
 btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
 mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
 
+// Buttons
 $("btnRefresh")?.addEventListener("click", loadFeatures);
 $("btnResetNew")?.addEventListener("click", () => {
 localStorage.removeItem(SEEN_TS_KEY);
 loadFeatures();
 });
 
+// Reveal animation
 const el = document.querySelector(".reveal");
+if (el) {
 const io = new IntersectionObserver((entries) => {
 entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
 }, { threshold: 0.12 });
 io.observe(el);
+}
 
 loadFeatures();
 })();
+  </script>
+</body>
+</html>
+
