@@ -295,5 +295,212 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
       <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB</div>
       <div class="flex flex-wrap gap-2 text-sm">
-        <a href="index.html" class="px-3 py-1.5 rounded-full border border
+        <a href="index.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Home</a>
+        <a href="pricing.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
+        <a href="contact.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== CONFIG =====
+    const FEATURES_URL = "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/feature.json";
+    const STORAGE_KEY = "astrionhub_seen_feature_keys_v1";
+
+    // ===== Helpers =====
+    const $ = (id) => document.getElementById(id);
+
+    function safeText(v, fallback="") {
+      if (v === null || v === undefined) return fallback;
+      return String(v);
+    }
+
+    function normalizeItems(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.features)) return data.features;
+      if (data && Array.isArray(data.items)) return data.items;
+      if (data && Array.isArray(data.data)) return data.data;
+      return [];
+    }
+
+    function getFeatureKey(item, idx) {
+      return safeText(item.id ?? item.key ?? item.slug ?? item.code ?? item.title ?? item.name ?? idx).trim();
+    }
+
+    function truthy(v) {
+      return v === true || v === 1 || v === "1" || (typeof v === "string" && v.toLowerCase() === "true");
+    }
+
+    function getSeenSet() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return new Set();
+        const arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return new Set();
+        return new Set(arr.map(String));
+      } catch {
+        return new Set();
+      }
+    }
+
+    function saveSeenSet(set) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set))); } catch {}
+    }
+
+    function show(el, yes) {
+      el.classList.toggle("hidden", !yes);
+    }
+
+    function setStats({ total=0, fresh=0, err=0 }) {
+      $("statTotal").textContent = String(total);
+      $("statNew").textContent = String(fresh);
+      $("statErr").textContent = String(err);
+      show($("statsPanel"), true);
+    }
+
+    function renderFeatureCard({ title, desc, icon, link, isNew, badgeText }) {
+      const aOpen = link ? "a" : "div";
+      const hrefAttr = link ? `href="${link}" target="_blank" rel="noreferrer"` : "";
+      const clickHint = link ? `
+        <span class="ml-auto text-xs text-white/55 inline-flex items-center gap-1">
+          <span>Open</span><span class="h-4 w-4" data-lucide="arrow-up-right"></span>
+        </span>` : "";
+
+      return `
+        <${aOpen} ${hrefAttr}
+          class="group glass rounded-2xl border border-white/10 p-5 transition hover:border-white/20 hover:bg-white/7">
+          <div class="flex items-start gap-3">
+            <div class="h-11 w-11 rounded-2xl border border-white/10 bg-white/5 grid place-items-center">
+              <span class="h-5 w-5 text-white/85" data-lucide="${icon}"></span>
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <div class="font-semibold text-white/90 truncate">${title}</div>
+                ${isNew ? `
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold
+                    bg-emerald-400/12 border border-emerald-300/15 text-emerald-200">
+                    ${badgeText || "NEW"}
+                  </span>` : ""}
+              </div>
+              <div class="mt-1 text-sm text-white/65">${desc || "—"}</div>
+            </div>
+
+            ${clickHint}
+          </div>
+        </${aOpen}>
+      `;
+    }
+
+    function initReveal() {
+      const el = document.querySelector(".reveal");
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
+      }, { threshold: 0.12 });
+      io.observe(el);
+    }
+
+    async function loadFeatures() {
+      const loading = $("stateLoading");
+      const errorBox = $("stateError");
+      const emptyBox = $("stateEmpty");
+      const grid = $("featureGrid");
+      const errText = $("errorText");
+      const meta = $("metaInfo");
+
+      show(loading, true);
+      show(errorBox, false);
+      show(emptyBox, false);
+      show(grid, false);
+      show($("statsPanel"), false);
+
+      grid.innerHTML = "";
+      meta.textContent = "";
+
+      try {
+        const url = FEATURES_URL + (FEATURES_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+
+        const lastModified = res.headers.get("last-modified");
+        const data = await res.json();
+
+        const items = normalizeItems(data);
+        if (!items.length) {
+          show(loading, false);
+          show(emptyBox, true);
+          setStats({ total: 0, fresh: 0, err: 0 });
+          return;
+        }
+
+        const seen = getSeenSet();
+
+        const rendered = items.map((item, idx) => {
+          const key = getFeatureKey(item, idx);
+          const title = safeText(item.title ?? item.name ?? "Untitled");
+          const desc = safeText(item.description ?? item.desc ?? item.detail ?? item.text ?? "");
+          const icon = safeText(item.icon ?? item.lucide ?? "sparkles").trim() || "sparkles";
+          const link = safeText(item.link ?? item.url ?? item.href ?? "");
+          const hasExplicitNew = truthy(item.new ?? item.isNew ?? item.is_new);
+
+          const isNew = hasExplicitNew || !seen.has(key);
+          const badgeText = safeText(item.badge ?? item.tag ?? "NEW");
+
+          return { key, title, desc, icon, link: link || null, isNew, badgeText };
+        });
+
+        grid.innerHTML = rendered.map(renderFeatureCard).join("");
+        lucide.createIcons();
+
+        const newSeen = new Set(seen);
+        rendered.forEach(r => newSeen.add(r.key));
+        saveSeenSet(newSeen);
+
+        const total = rendered.length;
+        const newCount = rendered.filter(r => r.isNew).length;
+
+        const infoParts = [];
+        infoParts.push(`${total} features loaded`);
+        if (newCount > 0) infoParts.push(`${newCount} new`);
+        if (lastModified) infoParts.push(`Updated: ${lastModified}`);
+        meta.textContent = infoParts.join(" • ");
+
+        show(loading, false);
+        show(grid, true);
+
+        // Stats (Total = green dot, Error = red dot)
+        setStats({ total, fresh: newCount, err: 0 });
+      } catch (e) {
+        show(loading, false);
+        show(errorBox, true);
+        errText.textContent = e?.message ? String(e.message) : "Unknown error";
+        setStats({ total: 0, fresh: 0, err: 1 });
+      }
+    }
+
+    (function boot() {
+      lucide.createIcons();
+      $("year").textContent = new Date().getFullYear();
+
+      const src = $("srcLink");
+      src.href = FEATURES_URL;
+      src.textContent = FEATURES_URL;
+
+      const btnMenu = $("btnMenu");
+      const mobileMenu = $("mobileMenu");
+      btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+      mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+
+      $("btnRefresh")?.addEventListener("click", loadFeatures);
+      $("btnResetNew")?.addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_KEY);
+        loadFeatures();
+      });
+
+      initReveal();
+      loadFeatures();
+    })();
+  </script>
+</body>
+</html>
 
