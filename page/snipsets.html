@@ -657,7 +657,7 @@
         it.variants?.length ? `${it.variants.length} variant` : ""
       ].filter(Boolean).join(" • ");
 
-      const preview = escapeHTML(linesPreview(it.previewCode, 14));
+      const preview = escapeHTML(linesPreview(it.previewCode, 7));
 
       return `
         <button data-open="${escapeHTML(it.key)}"
@@ -681,7 +681,7 @@
 
           <div class="mt-4 glass rounded-2xl border border-white/10 bg-[#070A12] overflow-hidden w-full max-w-full">
             <div class="code-fade">
-              <pre class="p-0 m-0 overflow-hidden max-h-[170px]">
+              <pre class="p-0 m-0 overflow-hidden max-h-[110px] sm:max-h-[160px]">
 <code class="language-javascript text-[12px] leading-relaxed block p-4">${preview}</code></pre>
             </div>
           </div>
