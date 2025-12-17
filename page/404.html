@@ -1,0 +1,277 @@
+<!-- FILE: 404.html -->
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>404 — Page Not Found</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
+          },
+          keyframes: {
+            shimmer: { "0%": { transform: "translateX(-120%)" }, "100%": { transform: "translateX(120%)" } },
+            floaty: { "0%,100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-10px)" } },
+          },
+          animation: {
+            shimmer: "shimmer 2.8s ease-in-out infinite",
+            floaty: "floaty 7s ease-in-out infinite"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{ --bg0:#070A12; --bg1:#0A1020; }
+    html{ scroll-behavior:smooth; }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
+        radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+    .grid-overlay{
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(70% 55% at 50% 35%, black 10%, transparent 70%);
+      opacity: .35;
+      pointer-events:none;
+    }
+    .vignette{
+      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.55) 100%);
+      pointer-events:none;
+    }
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glass-strong{
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .g-border{
+      position: relative;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(120deg,
+        rgba(124,92,255,.55),
+        rgba(25,211,255,.35),
+        rgba(46,229,157,.25),
+        rgba(255,255,255,.10)
+      );
+    }
+    .g-border > .inner{
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(10,16,32,.85), rgba(7,10,18,.72));
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .btn-shine{ position:relative; overflow:hidden; }
+    .btn-shine::after{
+      content:"";
+      position:absolute; top:-30%; left:-60%;
+      width:50%; height:160%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+      animation: shimmer 2.8s ease-in-out infinite;
+      opacity: .55;
+    }
+  </style>
+</head>
+
+<body class="text-white font-sans selection:bg-white/15 selection:text-white min-h-screen">
+  <div class="fixed inset-0 grid-overlay"></div>
+  <div class="fixed inset-0 vignette"></div>
+
+  <main class="relative min-h-screen flex items-center">
+    <div class="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid lg:grid-cols-12 gap-6 items-center">
+        <!-- Left -->
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-white/75">
+            <span class="h-4 w-4 text-white/80" data-lucide="triangle-alert"></span>
+            <span>404 • Page not found</span>
+            <span class="mx-1 h-1 w-1 rounded-full bg-white/25"></span>
+            <span class="text-white/55">Route tidak tersedia</span>
+          </div>
+
+          <h1 class="mt-5 text-4xl sm:text-5xl font-extrabold tracking-tight">
+            Halaman yang dicari tidak ditemukan.
+          </h1>
+
+          <p class="mt-4 text-base sm:text-lg text-white/70 max-w-2xl">
+            Kemungkinan link salah, halaman sudah dipindah, atau belum dibuat. Gunakan tombol di bawah untuk kembali.
+          </p>
+
+          <div class="mt-7 flex flex-col sm:flex-row gap-3">
+            <a href="index.html" class="btn-shine inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500/90 to-cyan-400/85 hover:from-violet-400/95 hover:to-cyan-300/90 transition">
+              <span class="h-5 w-5" data-lucide="home"></span>
+              <span class="font-semibold">Kembali ke Home</span>
+            </a>
+            <button id="btnBack" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+              <span class="h-5 w-5" data-lucide="arrow-left"></span>
+              <span class="font-semibold">Kembali</span>
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div class="mt-8 glass rounded-2xl border border-white/10 p-5">
+            <div class="flex items-center gap-2 text-sm text-white/80">
+              <span class="h-4 w-4" data-lucide="search"></span>
+              <span>Cari halaman</span>
+            </div>
+            <div class="mt-3 flex items-center gap-2">
+              <input id="q"
+                     class="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm text-white/85 outline-none focus:border-white/20"
+                     placeholder="Ketik: features, demo, pricing, contact…"
+                     autocomplete="off" />
+              <button id="clear"
+                      class="inline-flex items-center justify-center h-11 w-11 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/8 transition"
+                      aria-label="Clear">
+                <span class="h-4 w-4" data-lucide="x"></span>
+              </button>
+            </div>
+
+            <div id="results" class="mt-3 grid gap-2"></div>
+          </div>
+
+          <div class="mt-6 text-xs text-white/50 font-mono">
+            Requested path: <span id="path"></span>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="lg:col-span-5">
+          <div class="g-border">
+            <div class="inner glass-strong rounded-2xl p-6">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-sm text-white/75">
+                  <span class="h-4 w-4" data-lucide="sparkles"></span>
+                  <span>Suggested routes</span>
+                </div>
+                <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center animate-floaty">
+                  <span class="h-5 w-5" data-lucide="compass"></span>
+                </div>
+              </div>
+
+              <div class="mt-4 grid gap-2">
+                <a class="glass rounded-2xl border border-white/10 px-4 py-3 hover:bg-white/8 transition flex items-center justify-between" href="features.html">
+                  <div class="flex items-center gap-2">
+                    <span class="h-4 w-4" data-lucide="layers"></span>
+                    <span class="font-semibold">Features</span>
+                  </div>
+                  <span class="h-4 w-4 text-white/55" data-lucide="arrow-right"></span>
+                </a>
+
+                <a class="glass rounded-2xl border border-white/10 px-4 py-3 hover:bg-white/8 transition flex items-center justify-between" href="demo.html">
+                  <div class="flex items-center gap-2">
+                    <span class="h-4 w-4" data-lucide="code-2"></span>
+                    <span class="font-semibold">Demo</span>
+                  </div>
+                  <span class="h-4 w-4 text-white/55" data-lucide="arrow-right"></span>
+                </a>
+
+                <a class="glass rounded-2xl border border-white/10 px-4 py-3 hover:bg-white/8 transition flex items-center justify-between" href="pricing.html">
+                  <div class="flex items-center gap-2">
+                    <span class="h-4 w-4" data-lucide="badge-dollar-sign"></span>
+                    <span class="font-semibold">Pricing</span>
+                  </div>
+                  <span class="h-4 w-4 text-white/55" data-lucide="arrow-right"></span>
+                </a>
+
+                <a class="glass rounded-2xl border border-white/10 px-4 py-3 hover:bg-white/8 transition flex items-center justify-between" href="contact.html">
+                  <div class="flex items-center gap-2">
+                    <span class="h-4 w-4" data-lucide="send"></span>
+                    <span class="font-semibold">Contact</span>
+                  </div>
+                  <span class="h-4 w-4 text-white/55" data-lucide="arrow-right"></span>
+                </a>
+
+                <a class="btn-shine rounded-2xl px-4 py-3 bg-white text-black hover:bg-white/90 transition flex items-center justify-between"
+                   href="index.html#faq">
+                  <div class="flex items-center gap-2">
+                    <span class="h-4 w-4" data-lucide="help-circle"></span>
+                    <span class="font-semibold">FAQ (di Home)</span>
+                  </div>
+                  <span class="h-4 w-4" data-lucide="arrow-right"></span>
+                </a>
+              </div>
+
+              <div class="mt-4 text-xs text-white/55">
+                Tip: Pastikan file yang ada: <span class="font-mono text-white/75">index.html</span>, <span class="font-mono text-white/75">features.html</span>, <span class="font-mono text-white/75">demo.html</span>, <span class="font-mono text-white/75">pricing.html</span>, <span class="font-mono text-white/75">contact.html</span>, dan <span class="font-mono text-white/75">404.html</span>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-10 text-xs text-white/45">
+        © <span id="year"></span> ASTRIONHUB
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("path").textContent = location.pathname + location.search;
+
+    document.getElementById("btnBack").addEventListener("click", () => history.back());
+
+    const PAGES = [
+      { label: "Home", href: "index.html", keywords: "home index utama" },
+      { label: "Features", href: "features.html", keywords: "feature fitur list" },
+      { label: "Demo", href: "demo.html", keywords: "demo code chat" },
+      { label: "Pricing", href: "pricing.html", keywords: "harga pricing plan" },
+      { label: "Contact", href: "contact.html", keywords: "kontak contact support" },
+      { label: "FAQ", href: "index.html#faq", keywords: "faq bantuan pertanyaan" }
+    ];
+
+    const q = document.getElementById("q");
+    const results = document.getElementById("results");
+    const clear = document.getElementById("clear");
+
+    function render(query) {
+      const s = (query || "").trim().toLowerCase();
+      const list = !s ? PAGES : PAGES.filter(p => (p.label + " " + p.keywords).toLowerCase().includes(s));
+
+      results.innerHTML = list.map(p => `
+        <a class="glass rounded-2xl border border-white/10 px-4 py-3 hover:bg-white/8 transition flex items-center justify-between"
+           href="${p.href}">
+          <span class="font-semibold text-white/85">${p.label}</span>
+          <span class="h-4 w-4 text-white/55" data-lucide="arrow-right"></span>
+        </a>
+      `).join("");
+
+      lucide.createIcons();
+    }
+
+    q.addEventListener("input", () => render(q.value));
+    clear.addEventListener("click", () => { q.value = ""; render(""); q.focus(); });
+
+    render("");
+  </script>
+</body>
+</html>
