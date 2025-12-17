@@ -1,23 +1,9 @@
 
 [
   {
-    "id": "auto-farm",
-    "title": "Auto Farm",
-    "description": "Farm otomatis dengan pathing stabil dan aman.",
-    "icon": "bot",
-    "link": "https://example.com/docs/auto-farm",
-    "new": true
-  },
-  {
-    "id": "anti-ban",
-    "title": "Anti Detection",
-    "description": "Randomized timing & humanization untuk mengurangi pola.",
-    "icon": "shield"
-  },
-  {
-    "id": "ui-overlay",
-    "title": "In-Game Overlay UI",
-    "description": "Panel UI modern dengan toggle cepat dan status info.",
+    "id": "Based",
+    "title": "System",
+    "description": "",
     "icon": "layout-grid"
   }
 ]
