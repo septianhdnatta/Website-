@@ -1,1 +1,16 @@
+{
+  "snipsets": [
+    {
+      "id": "brat",
+      "title": "Brat",
+      "description": "Dekorasi untuk sticker (menu BRAT V1/V2).",
+      "version": "1.0.0",
+      "icon": "sparkles",
+      "type": "case",
+      "variants": {
+        "case": "case 'brat': {\n  if (!text) return m.reply('Masukkan teks!\\n\\nContoh: .brat Hello World')\n  \n  // Tampilkan menu dengan 2 button pilihan yang membawa text user\n  const msg = generateWAMessageFromContent(m.chat, {\n    viewOnceMessage: {\n      message: {\n        messageContextInfo: {\n          deviceListMetadata: {},\n          deviceListMetadataVersion: 2\n        },\n        interactiveMessage: proto.Message.InteractiveMessage.create({\n          body: proto.Message.InteractiveMessage.Body.create({\n            text: `Hai! Kami memiliki 2 fitur BRAT! Pilih ya! 💚\\n\\n*BRAT V1* - Brat text style sticker\\n*BRAT V2* - Brat text animated sticker\\n\\n📝 Text: *${text}*`\n          }),\n          footer: proto.Message.InteractiveMessage.Footer.create({\n            text: \"💡 Pilih versi BRAT yang kamu mau\"\n          }),\n          nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({\n            buttons: [\n              {\n                name: \"quick_reply\",\n                buttonParamsJson: JSON.stringify({\n                  display_text: \"🖼️ BRAT V1 (Sticker)\",\n                  id: `.brat1 ${text}`\n                })\n              },\n              {\n                name: \"quick_reply\",\n                buttonParamsJson: JSON.stringify({\n                  display_text: \"🎬 BRAT V2 (Animated)\",\n                  id: `.brat2 ${text}`\n                })\n              }\n            ]\n          })\n        })\n      }\n    }\n  }, {})\n  \n  await yuuka.relayMessage(m.chat, msg.message, {\n    messageId: msg.key.id\n  })\n}\nbreak"
+      }
+    }
+  ]
+}
 
