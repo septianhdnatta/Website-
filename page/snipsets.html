@@ -1,4 +1,468 @@
-    function pickTitle(item) {
+
+<!-- FILE: snipsets.html -->
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ASTRIONHUB — Code Snipsets</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
+          },
+          keyframes: {
+            shimmer: { "0%": { transform: "translateX(-120%)" }, "100%": { transform: "translateX(120%)" } },
+          },
+          animation: { shimmer: "shimmer 2.8s ease-in-out infinite" }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{ --bg0:#070A12; --bg1:#0A1020; }
+    html{ scroll-behavior:smooth; }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
+        radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      background-color:#070A12;
+    }
+
+    .bg-grid{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: .22;
+    }
+    .bg-vignette{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.58) 100%);
+    }
+    .app{ position: relative; z-index: 1; }
+
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glass-strong{
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .g-border{
+      position: relative;
+      border-radius: 16px;
+      padding: 1px;
+      overflow: hidden;
+      background: linear-gradient(120deg,
+        rgba(124,92,255,.55),
+        rgba(25,211,255,.35),
+        rgba(46,229,157,.25),
+        rgba(255,255,255,.10)
+      );
+    }
+    .g-border > .inner{
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(10,16,32,.85), rgba(7,10,18,.72));
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .btn-shine{ position:relative; overflow:hidden; }
+    .btn-shine::after{
+      content:"";
+      position:absolute; top:-30%; left:-60%;
+      width:50%; height:160%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+      animation: shimmer 2.8s ease-in-out infinite;
+      opacity: .55;
+    }
+
+    .reveal{ opacity:0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.show{ opacity:1; transform: translateY(0); }
+
+    .mono{ font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
+    .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
+    .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
+
+    /* code preview fade */
+    .code-fade{
+      position: relative;
+    }
+    .code-fade::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height: 46px;
+      background: linear-gradient(180deg, rgba(7,10,18,0), rgba(7,10,18,.92));
+      pointer-events:none;
+    }
+  </style>
+</head>
+
+<body class="text-white font-sans selection:bg-white/15 selection:text-white overflow-x-hidden min-h-screen bg-[#070A12]">
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+
+  <div class="app">
+    <!-- NAV -->
+    <header class="sticky top-0 z-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+        <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between max-w-full">
+          <a href="index.html" class="flex items-center gap-3 min-w-0">
+            <div class="g-border h-10 w-10 rounded-xl overflow-hidden grid place-items-center flex-none">
+              <div class="inner h-full w-full grid place-items-center">
+                <div class="h-6 w-6 text-white/90" data-lucide="sparkles"></div>
+              </div>
+            </div>
+            <div class="leading-tight min-w-0">
+              <div class="text-sm text-white/85 font-semibold truncate">ASTRIONHUB</div>
+              <div class="text-xs text-white/50 truncate">Code Snipsets</div>
+            </div>
+          </a>
+
+          <div class="hidden md:flex items-center gap-6 text-sm text-white/75">
+            <a class="hover:text-white transition" href="features.html">Features</a>
+            <a class="hover:text-white transition" href="snipsets.html">Snipsets</a>
+            <a class="hover:text-white transition" href="demo.html">Demo</a>
+            <a class="hover:text-white transition" href="pricing.html">Pricing</a>
+            <a class="hover:text-white transition" href="contact.html">Contact</a>
+          </div>
+
+          <button id="btnMenu" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition" aria-label="Open menu">
+            <span class="h-5 w-5" data-lucide="menu"></span>
+          </button>
+        </nav>
+
+        <div id="mobileMenu" class="hidden md:hidden mt-3 glass rounded-2xl px-4 py-3 max-w-full">
+          <div class="grid gap-1 text-sm text-white/80">
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="features.html">Features</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="snipsets.html">Snipsets</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="demo.html">Demo</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="pricing.html">Pricing</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="contact.html">Contact</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14">
+      <section class="reveal">
+        <div class="g-border w-full max-w-full">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8 w-full max-w-full">
+
+            <div class="flex items-start justify-between gap-4 flex-wrap min-w-0">
+              <div class="min-w-0">
+                <div class="text-xs text-white/55">Code Snipsets</div>
+                <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Library kode fitur</h1>
+                <p class="mt-3 text-white/70 max-w-2xl">
+                  Semua code fitur dikumpulkan di sini. Klik card untuk lihat kode lengkap dan copy.
+                </p>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <button id="btnRefresh"
+                  class="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+                  <span class="h-4 w-4" data-lucide="refresh-cw"></span>
+                  <span class="text-sm font-semibold">Refresh</span>
+                </button>
+
+                <button id="btnResetMarks"
+                  class="btn-shine inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition">
+                  <span class="h-4 w-4" data-lucide="badge-check"></span>
+                  <span class="text-sm font-semibold">Reset NEW/UPD</span>
+                </button>
+
+                <button id="btnOpenJson"
+                  class="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+                  <span class="h-4 w-4" data-lucide="link"></span>
+                  <span class="text-sm font-semibold">JSON</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Search + Filters -->
+            <div class="mt-6 grid lg:grid-cols-12 gap-3 min-w-0">
+              <div class="lg:col-span-7 min-w-0">
+                <div class="glass rounded-2xl border border-white/10 px-4 py-3 flex items-center gap-3 min-w-0">
+                  <span class="h-4 w-4 text-white/60 flex-none" data-lucide="search"></span>
+                  <input id="q"
+                    class="w-full bg-transparent outline-none text-sm text-white/90 placeholder:text-white/35 min-w-0"
+                    placeholder="Cari nama fitur, deskripsi, versi, atau isi code..." />
+                  <button id="btnClear"
+                    class="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition flex-none"
+                    aria-label="Clear">
+                    <span class="h-4 w-4" data-lucide="x"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="lg:col-span-5 min-w-0">
+                <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex flex-wrap gap-2 items-center">
+                  <button data-filter="all" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">All</button>
+                  <button data-filter="case" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">Case</button>
+                  <button data-filter="cjs" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">Plugin CJS</button>
+                  <button data-filter="esm" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">Plugin ESM</button>
+                  <span class="ml-auto text-xs text-white/50" id="resultMeta">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="mt-5 grid grid-cols-2 lg:grid-cols-6 gap-3" id="statsPanel">
+              <div class="glass rounded-2xl border border-white/10 p-4">
+                <div class="flex items-center justify-between text-xs text-white/60">
+                  <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="layers"></span>Total</span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                </div>
+                <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statTotal">0</div>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 p-4">
+                <div class="flex items-center justify-between text-xs text-white/60">
+                  <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="sparkles"></span>New</span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span>
+                </div>
+                <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statNew">0</div>
+                <div class="mt-2 text-[11px] text-white/45">TTL 24h</div>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 p-4">
+                <div class="flex items-center justify-between text-xs text-white/60">
+                  <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="arrow-up-right"></span>Updated</span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-violet-300"></span>
+                </div>
+                <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statUpd">0</div>
+                <div class="mt-2 text-[11px] text-white/45">Detected by hash</div>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 p-4">
+                <div class="flex items-center justify-between text-xs text-white/60">
+                  <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="braces"></span>Case</span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-sky-300"></span>
+                </div>
+                <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statCase">0</div>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 p-4">
+                <div class="flex items-center justify-between text-xs text-white/60">
+                  <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="box"></span>CJS</span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-amber-300"></span>
+                </div>
+                <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statCjs">0</div>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 p-4">
+                <div class="flex items-center justify-between text-xs text-white/60">
+                  <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="package"></span>ESM</span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-teal-300"></span>
+                </div>
+                <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statEsm">0</div>
+              </div>
+            </div>
+
+            <!-- STATES -->
+            <div id="stateLoading" class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="glass rounded-2xl border border-white/10 p-5 animate-pulse">
+                <div class="h-5 w-32 bg-white/10 rounded"></div>
+                <div class="mt-3 h-4 w-full bg-white/8 rounded"></div>
+                <div class="mt-2 h-4 w-5/6 bg-white/8 rounded"></div>
+                <div class="mt-4 h-28 w-full bg-white/6 rounded-2xl"></div>
+              </div>
+              <div class="glass rounded-2xl border border-white/10 p-5 animate-pulse">
+                <div class="h-5 w-28 bg-white/10 rounded"></div>
+                <div class="mt-3 h-4 w-full bg-white/8 rounded"></div>
+                <div class="mt-2 h-4 w-2/3 bg-white/8 rounded"></div>
+                <div class="mt-4 h-28 w-full bg-white/6 rounded-2xl"></div>
+              </div>
+              <div class="glass rounded-2xl border border-white/10 p-5 animate-pulse">
+                <div class="h-5 w-36 bg-white/10 rounded"></div>
+                <div class="mt-3 h-4 w-full bg-white/8 rounded"></div>
+                <div class="mt-2 h-4 w-4/5 bg-white/8 rounded"></div>
+                <div class="mt-4 h-28 w-full bg-white/6 rounded-2xl"></div>
+              </div>
+            </div>
+
+            <div id="stateError" class="hidden mt-6 glass rounded-2xl border border-rose-300/15 bg-rose-500/10 p-5">
+              <div class="flex items-start gap-3 min-w-0">
+                <span class="h-5 w-5 text-rose-200 flex-none" data-lucide="triangle-alert"></span>
+                <div class="min-w-0">
+                  <div class="font-semibold text-rose-100">Gagal load snipsets.json</div>
+                  <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="stateEmpty" class="hidden mt-6 glass rounded-2xl border border-white/10 p-5">
+              <div class="flex items-start gap-3 min-w-0">
+                <span class="h-5 w-5 text-white/70 flex-none" data-lucide="inbox"></span>
+                <div class="min-w-0">
+                  <div class="font-semibold text-white/85">Belum ada snipsets</div>
+                  <div class="mt-1 text-sm text-white/65">Isi JSON dulu, nanti otomatis tampil di sini.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- GRID -->
+            <div id="grid" class="hidden mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB</div>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <a href="index.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Home</a>
+          <a href="features.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Features</a>
+          <a href="pricing.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
+          <a href="contact.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="hidden fixed inset-0 z-[999]">
+    <div id="modalBackdrop" class="absolute inset-0 bg-black/70"></div>
+
+    <div class="relative mx-auto max-w-5xl w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div class="g-border w-full max-w-full">
+        <div class="inner glass-strong rounded-2xl p-5 sm:p-6 w-full max-w-full overflow-hidden">
+          <div class="flex items-start justify-between gap-3 min-w-0">
+            <div class="min-w-0">
+              <div class="text-xs text-white/55">Snippet</div>
+              <div class="mt-1 flex items-center gap-2 min-w-0">
+                <div id="mTitle" class="text-xl sm:text-2xl font-extrabold tracking-tight truncate">—</div>
+                <span id="mBadges" class="flex items-center gap-2 flex-none"></span>
+              </div>
+              <div id="mMeta" class="mt-1 text-sm text-white/55 break-all"></div>
+            </div>
+
+            <button id="btnClose"
+              class="inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition flex-none"
+              aria-label="Close">
+              <span class="h-5 w-5" data-lucide="x"></span>
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="mt-4 flex flex-wrap gap-2" id="tabs"></div>
+
+          <!-- Code area -->
+          <div class="mt-4 glass rounded-2xl border border-white/10 overflow-hidden w-full max-w-full">
+            <div class="flex items-center justify-between gap-2 px-4 py-3 border-b border-white/10 bg-white/5">
+              <div class="flex items-center gap-2 text-sm text-white/80 min-w-0">
+                <span class="h-4 w-4 flex-none" data-lucide="code-2"></span>
+                <span id="mTabLabel" class="font-semibold truncate">Code</span>
+              </div>
+              <button id="btnCopy"
+                class="btn-shine inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-white text-black hover:bg-white/90 transition text-sm font-semibold flex-none">
+                <span class="h-4 w-4" data-lucide="copy"></span>
+                Copy
+              </button>
+            </div>
+
+            <pre class="mono text-[12px] sm:text-[13px] leading-relaxed p-4 overflow-auto max-h-[62vh] scrollbar bg-[#070A12]">
+<code id="mCode" class="text-white/85"></code></pre>
+          </div>
+
+          <div class="mt-4 glass rounded-2xl border border-white/10 p-4">
+            <div class="flex items-start gap-3 min-w-0">
+              <span class="h-5 w-5 text-white/70 flex-none" data-lucide="align-left"></span>
+              <div class="min-w-0">
+                <div class="text-sm font-semibold text-white/85">Deskripsi</div>
+                <div id="mDesc" class="mt-1 text-sm text-white/70 break-words">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="toast" class="hidden mt-3 text-sm text-white/70"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== CONFIG =====
+    const JSON_URLS = [
+      "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/snipsets.json",
+      "https://raw.githubusercontent.com/septianhdnatta/Website-/main/db/snipsets.json"
+    ];
+
+    const NEW_TTL_MS = 24 * 60 * 60 * 1000;
+    const UPDATED_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+    const SEEN_KEY = "astrionhub_snipsets_seen_ts_v1";
+    const HASH_KEY = "astrionhub_snipsets_hash_v1";
+    const UPDATED_KEY = "astrionhub_snipsets_updated_ts_v1";
+
+    // ===== Helpers =====
+    const $ = (id) => document.getElementById(id);
+    const safeText = (v, fallback="") => (v === null || v === undefined) ? fallback : String(v);
+    const nowMs = () => Date.now();
+
+    function escapeHTML(str) {
+      const s = safeText(str, "");
+      return s.replace(/[&<>"']/g, (ch) => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+      }[ch]));
+    }
+
+    function normalizeItems(data) {
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.snipsets)) return data.snipsets;
+      if (data && Array.isArray(data.snippets)) return data.snippets;
+      if (data && Array.isArray(data.items)) return data.items;
+      if (data && Array.isArray(data.data)) return data.data;
+      return [];
+    }
+
+    function toCodeString(v) {
+      if (v === null || v === undefined) return "";
+      if (Array.isArray(v)) return v.map(x => safeText(x)).join("\n");
+      if (typeof v === "object") {
+        // if it looks like { code: "..."} allow it
+        if (typeof v.code === "string") return v.code;
+        try { return JSON.stringify(v, null, 2); } catch { return String(v); }
+      }
+      return String(v);
+    }
+
+    function getKey(item, idx) {
+      const k = item.id ?? item.key ?? item.slug ?? item.name ?? item.title ?? item.feature ?? idx;
+      return safeText(k, idx).trim();
+    }
+
+        function pickTitle(item) {
       return safeText(item.title ?? item.name ?? item.feature ?? item.id ?? "Untitled");
     }
 
