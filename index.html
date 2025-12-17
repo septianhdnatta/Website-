@@ -1,28 +1,25 @@
+
 <!doctype html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ASTRIONHUB — AI-Style Landing Page</title>
+  <title>ASTRIONHUB — AI Landing</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Tailwind Play CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide Icons (CDN) -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.tailwindcss.com"></script> <!-- Play CDN Tailwind [web:14] -->
+  <script src="https://unpkg.com/lucide@latest"></script> <!-- Lucide CDN [web:18] -->
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "Roboto", "Arial"],
-            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono"]
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
           },
           boxShadow: {
             glow: "0 0 0 1px rgba(255,255,255,.08), 0 20px 70px rgba(0,0,0,.60)",
@@ -35,7 +32,7 @@
           },
           animation: {
             floaty: "floaty 6s ease-in-out infinite",
-            shimmer: "shimmer 2.6s ease-in-out infinite",
+            shimmer: "shimmer 2.8s ease-in-out infinite",
             pulseGlow: "pulseGlow 3.2s ease-in-out infinite"
           }
         }
@@ -47,26 +44,15 @@
     :root{
       --bg0:#070A12;
       --bg1:#0A1020;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.085);
-      --stroke: rgba(255,255,255,.10);
-      --stroke2: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.68);
-      --muted2: rgba(255,255,255,.52);
-      --brand:#7C5CFF;
-      --brand2:#19D3FF;
-      --ok:#2EE59D;
-      --warn:#FFB020;
     }
-
     html { scroll-behavior: smooth; }
-    body { background: radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
-                      radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
-                      radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
-                      linear-gradient(180deg, var(--bg0), var(--bg1)); }
-
-    /* Subtle grid + vignette */
+    body {
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
+        radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
     .grid-overlay{
       background-image:
         linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
@@ -80,8 +66,6 @@
       background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.55) 100%);
       pointer-events: none;
     }
-
-    /* Glass card */
     .glass{
       background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
       border: 1px solid rgba(255,255,255,.12);
@@ -96,8 +80,6 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
-
-    /* Gradient border wrapper */
     .g-border{
       position: relative;
       border-radius: 16px;
@@ -114,91 +96,66 @@
       background: linear-gradient(180deg, rgba(10,16,32,.85), rgba(7,10,18,.72));
       border: 1px solid rgba(255,255,255,.10);
     }
-
-    /* Button shine */
-    .btn-shine{
-      position: relative;
-      overflow: hidden;
-    }
+    .btn-shine{ position: relative; overflow: hidden; }
     .btn-shine::after{
       content:"";
-      position:absolute;
-      top:-30%;
-      left:-60%;
-      width:50%;
-      height:160%;
+      position:absolute; top:-30%; left:-60%;
+      width:50%; height:160%;
       transform: rotate(18deg);
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
       animation: shimmer 2.8s ease-in-out infinite;
       opacity: .55;
     }
-
-    /* Reveal on scroll */
-    .reveal{ opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal.show{ opacity: 1; transform: translateY(0); }
-
-    /* Code panel */
-    .code-scroll::-webkit-scrollbar { height: 10px; }
-    .code-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
-    .code-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,.05); border-radius: 999px; }
   </style>
 </head>
 
 <body class="text-white font-sans selection:bg-white/15 selection:text-white">
-  <!-- Background overlays -->
   <div class="fixed inset-0 grid-overlay"></div>
   <div class="fixed inset-0 vignette"></div>
 
-  <!-- Top nav -->
+  <!-- NAV -->
   <header class="sticky top-0 z-50">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
       <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between shadow-soft">
-        <a href="#home" class="flex items-center gap-3">
-          <div class="relative h-10 w-10 rounded-xl overflow-hidden grid place-items-center g-border">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="g-border h-10 w-10 rounded-xl overflow-hidden grid place-items-center">
             <div class="inner h-full w-full grid place-items-center">
               <div class="h-6 w-6 text-white/90" data-lucide="sparkles"></div>
             </div>
           </div>
           <div class="leading-tight">
-            <div class="text-sm text-white/80">ASTRIONHUB</div>
-            <div class="text-xs text-white/50">AI-ready UI for builders</div>
+            <div class="text-sm text-white/85 font-semibold">ASTRIONHUB</div>
+            <div class="text-xs text-white/50">AI-style landing</div>
           </div>
         </a>
 
         <div class="hidden md:flex items-center gap-6 text-sm text-white/75">
-          <a class="hover:text-white transition" href="#features">Features</a>
-          <a class="hover:text-white transition" href="#demo">Demo</a>
-          <a class="hover:text-white transition" href="#pricing">Pricing</a>
+          <a class="hover:text-white transition" href="features.html">Features</a>
+          <a class="hover:text-white transition" href="demo.html">Demo</a>
+          <a class="hover:text-white transition" href="pricing.html">Pricing</a>
           <a class="hover:text-white transition" href="#faq">FAQ</a>
-          <a class="hover:text-white transition" href="#contact">Contact</a>
+          <a class="hover:text-white transition" href="contact.html">Contact</a>
         </div>
 
-        <div class="flex items-center gap-2">
-          <a href="#pricing" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition text-sm">
-            <span class="h-4 w-4" data-lucide="badge-check"></span>
-            <span>Get Pro</span>
-          </a>
-          <button id="btnMenu" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition">
-            <span class="h-5 w-5" data-lucide="menu"></span>
-          </button>
-        </div>
+        <button id="btnMenu" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition" aria-label="Open menu">
+          <span class="h-5 w-5" data-lucide="menu"></span>
+        </button>
       </nav>
 
-      <!-- Mobile menu -->
       <div id="mobileMenu" class="hidden md:hidden mt-3 glass rounded-2xl px-4 py-3">
-        <div class="grid gap-2 text-sm text-white/80">
-          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#features">Features</a>
-          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#demo">Demo</a>
-          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#pricing">Pricing</a>
+        <div class="grid gap-1 text-sm text-white/80">
+          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="features.html">Features</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="demo.html">Demo</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="pricing.html">Pricing</a>
           <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#faq">FAQ</a>
-          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#contact">Contact</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="contact.html">Contact</a>
         </div>
       </div>
     </div>
   </header>
 
   <main id="home" class="relative">
-    <!-- Hero -->
+    <!-- HERO (sesuai potongan kamu) -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-12 sm:pb-16">
       <div class="grid lg:grid-cols-12 gap-8 items-center">
         <div class="lg:col-span-7">
@@ -219,11 +176,11 @@
           </p>
 
           <div class="mt-7 flex flex-col sm:flex-row gap-3">
-            <a href="#pricing" class="btn-shine inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500/90 to-cyan-400/85 hover:from-violet-400/95 hover:to-cyan-300/90 transition shadow-glow">
+            <a href="pricing.html" class="btn-shine inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500/90 to-cyan-400/85 hover:from-violet-400/95 hover:to-cyan-300/90 transition shadow-glow">
               <span class="h-5 w-5" data-lucide="rocket"></span>
               <span class="font-semibold">Start now</span>
             </a>
-            <a href="#demo" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+            <a href="demo.html" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
               <span class="h-5 w-5" data-lucide="terminal"></span>
               <span class="font-semibold">View demo</span>
             </a>
@@ -310,11 +267,11 @@
               </div>
 
               <div class="mt-5 flex gap-2">
-                <a href="#features" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+                <a href="features.html" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
                   <span class="h-4 w-4" data-lucide="layers"></span>
                   <span class="text-sm font-semibold">Explore</span>
                 </a>
-                <a href="#contact" class="flex-1 btn-shine inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition">
+                <a href="contact.html" class="flex-1 btn-shine inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition">
                   <span class="h-4 w-4" data-lucide="send"></span>
                   <span class="text-sm font-semibold">Contact</span>
                 </a>
@@ -329,321 +286,32 @@
       </div>
     </section>
 
-    <!-- Logos -->
-    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-6">
-      <div class="glass rounded-2xl px-5 py-4 flex flex-wrap items-center justify-between gap-3 text-white/60 text-sm">
-        <div class="flex items-center gap-2">
-          <span class="h-4 w-4" data-lucide="stars"></span>
-          <span>Trusted by builders</span>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">Studio</span>
-          <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">Automation</span>
-          <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">Key System</span>
-          <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">Bots</span>
-          <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">Web Apps</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div class="reveal">
-        <div class="flex items-end justify-between gap-4 flex-wrap">
+    <!-- FAQ tetap di index -->
+    <section id="faq" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
+      <div class="glass rounded-2xl border border-white/10 p-6 sm:p-8">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <div class="text-xs text-white/55">Features</div>
-            <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Designed like a modern AI product.</h2>
-            <p class="mt-3 text-white/70 max-w-2xl">Panel glass, glow halus, spacing rapi, dan komponen yang “feel premium” tanpa terlihat berlebihan.</p>
+            <div class="text-xs text-white/55">FAQ</div>
+            <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">Questions, answered.</h2>
+            <p class="mt-2 text-white/70 max-w-2xl">Accordion smooth, tinggal ganti copy-nya.</p>
           </div>
-          <a href="#demo" class="inline-flex items-center gap-2 text-sm text-white/75 hover:text-white transition">
-            <span>Lihat demo</span>
+          <a href="contact.html" class="inline-flex items-center gap-2 text-sm text-white/75 hover:text-white transition">
+            <span>Need help?</span>
             <span class="h-4 w-4" data-lucide="arrow-right"></span>
           </a>
         </div>
 
-        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="glass rounded-2xl p-5 hover:border-white/18 transition border border-white/10">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center">
-                <span class="h-5 w-5" data-lucide="wand-2"></span>
-              </div>
-              <div class="font-semibold">Polished visuals</div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">Typography dan kontras di-set biar enak dibaca dan terlihat “AI UI”.</p>
-          </div>
-
-          <div class="glass rounded-2xl p-5 hover:border-white/18 transition border border-white/10">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center">
-                <span class="h-5 w-5" data-lucide="lock"></span>
-              </div>
-              <div class="font-semibold">Trust-ready</div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">Area untuk security copy, badge, status, dan social proof.</p>
-          </div>
-
-          <div class="glass rounded-2xl p-5 hover:border-white/18 transition border border-white/10">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center">
-                <span class="h-5 w-5" data-lucide="sparkles"></span>
-              </div>
-              <div class="font-semibold">Subtle motion</div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">Animasi halus (bukan norak) buat bikin UI terasa hidup.</p>
-          </div>
-
-          <div class="glass rounded-2xl p-5 hover:border-white/18 transition border border-white/10">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center">
-                <span class="h-5 w-5" data-lucide="smartphone"></span>
-              </div>
-              <div class="font-semibold">Mobile-first</div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">Layout rapih di mobile, termasuk menu hamburger.</p>
-          </div>
-
-          <div class="glass rounded-2xl p-5 hover:border-white/18 transition border border-white/10">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center">
-                <span class="h-5 w-5" data-lucide="code"></span>
-              </div>
-              <div class="font-semibold">Dev-friendly</div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">Ada panel “code-like” untuk dokumentasi / snippet / demo.</p>
-          </div>
-
-          <div class="glass rounded-2xl p-5 hover:border-white/18 transition border border-white/10">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-white/6 border border-white/10 grid place-items-center">
-                <span class="h-5 w-5" data-lucide="line-chart"></span>
-              </div>
-              <div class="font-semibold">Conversion layout</div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">Alur landing lengkap: Hero → Fitur → Demo → Testimoni → Pricing → FAQ.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Demo -->
-    <section id="demo" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div class="reveal grid lg:grid-cols-12 gap-6 items-start">
-        <div class="lg:col-span-5">
-          <div class="text-xs text-white/55">Demo</div>
-          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">A developer-style showcase.</h2>
-          <p class="mt-3 text-white/70">Cocok buat produk kamu yang punya script, API, atau workflow automation.</p>
-
-          <div class="mt-6 grid gap-3">
-            <div class="glass rounded-2xl p-4 border border-white/10">
-              <div class="flex items-center gap-2 text-sm text-white/80">
-                <span class="h-4 w-4" data-lucide="check-circle-2"></span>
-                <span>Single file deployment</span>
-              </div>
-              <div class="mt-1 text-xs text-white/55">Cukup upload 1 file, selesai.</div>
-            </div>
-            <div class="glass rounded-2xl p-4 border border-white/10">
-              <div class="flex items-center gap-2 text-sm text-white/80">
-                <span class="h-4 w-4" data-lucide="check-circle-2"></span>
-                <span>Copy-to-clipboard</span>
-              </div>
-              <div class="mt-1 text-xs text-white/55">Tombol copy untuk snippet code.</div>
-            </div>
-            <div class="glass rounded-2xl p-4 border border-white/10">
-              <div class="flex items-center gap-2 text-sm text-white/80">
-                <span class="h-4 w-4" data-lucide="check-circle-2"></span>
-                <span>FAQ accordion</span>
-              </div>
-              <div class="mt-1 text-xs text-white/55">Interaksi UI yang clean.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-7">
-          <div class="glass-strong rounded-2xl border border-white/12 overflow-hidden">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5">
-              <div class="flex items-center gap-2 text-sm text-white/75">
-                <span class="h-4 w-4" data-lucide="terminal-square"></span>
-                <span>Quick start</span>
-              </div>
-              <button id="btnCopy" class="inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition">
-                <span class="h-4 w-4" data-lucide="copy"></span>
-                <span id="copyText">Copy</span>
-              </button>
-            </div>
-            <pre class="code-scroll overflow-x-auto p-4 text-sm font-mono text-white/80 leading-relaxed"><code id="codeBlock"># Install
-npm i astrionhub
-
-# Configure
-export ASTRION_KEY="YOUR_KEY"
-export ASTRION_MODE="production"
-
-# Run
-astrionhub start --ui=ai-glass --port=3000
-
-# Result
-# http://localhost:3000</code></pre>
-            <div class="px-4 py-3 border-t border-white/10 bg-white/3 text-xs text-white/55">
-              Edit bagian snippet ini sesuai produk kamu (API endpoint, install command, dll).
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div class="reveal">
-        <div class="flex items-end justify-between gap-4 flex-wrap">
-          <div>
-            <div class="text-xs text-white/55">Social proof</div>
-            <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">What users say</h2>
-            <p class="mt-3 text-white/70 max-w-2xl">Template testimoni yang bisa kamu ganti dengan review asli.</p>
-          </div>
-        </div>
-
-        <div class="mt-8 grid lg:grid-cols-3 gap-4">
-          <div class="glass rounded-2xl p-5 border border-white/10">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-white/75 text-sm">
-                <span class="h-4 w-4" data-lucide="quote"></span>
-                <span>Clean & premium</span>
-              </div>
-              <div class="flex gap-1 text-white/40">
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-              </div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">“Tampilan langsung berasa seperti produk AI beneran. CTA-nya jelas dan layout-nya rapi.”</p>
-            <div class="mt-4 text-xs text-white/50">Developer • Indonesia</div>
-          </div>
-
-          <div class="glass rounded-2xl p-5 border border-white/10">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-white/75 text-sm">
-                <span class="h-4 w-4" data-lucide="quote"></span>
-                <span>Fast to edit</span>
-              </div>
-              <div class="flex gap-1 text-white/40">
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-              </div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">“Satu file doang, tinggal ganti copy dan icon. Deploy cepat banget.”</p>
-            <div class="mt-4 text-xs text-white/50">Builder • Web automation</div>
-          </div>
-
-          <div class="glass rounded-2xl p-5 border border-white/10">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-white/75 text-sm">
-                <span class="h-4 w-4" data-lucide="quote"></span>
-                <span>Looks modern</span>
-              </div>
-              <div class="flex gap-1 text-white/40">
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-                <span class="h-4 w-4" data-lucide="star"></span>
-              </div>
-            </div>
-            <p class="mt-3 text-sm text-white/65">“Glass UI-nya halus, grid background-nya pas, tidak ganggu keterbacaan.”</p>
-            <div class="mt-4 text-xs text-white/50">Designer • UI systems</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pricing -->
-    <section id="pricing" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div class="reveal">
-        <div class="text-xs text-white/55">Pricing</div>
-        <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Simple pricing, clear value.</h2>
-        <p class="mt-3 text-white/70 max-w-2xl">Ganti nominal/fitur sesuai produk kamu (script hub, key system, bot service, SaaS, dll).</p>
-
-        <div class="mt-8 grid lg:grid-cols-3 gap-4">
-          <div class="glass rounded-2xl p-6 border border-white/10">
-            <div class="flex items-center justify-between">
-              <div class="font-semibold">Starter</div>
-              <span class="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-white/60">For testing</span>
-            </div>
-            <div class="mt-4 text-4xl font-extrabold">Free</div>
-            <div class="mt-1 text-sm text-white/60">Basic landing + sections.</div>
-            <ul class="mt-5 space-y-2 text-sm text-white/70">
-              <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Single file</li>
-              <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Responsive layout</li>
-              <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Basic animations</li>
-            </ul>
-            <a href="#contact" class="mt-6 inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
-              <span class="h-4 w-4" data-lucide="mail"></span>
-              <span class="font-semibold">Contact</span>
-            </a>
-          </div>
-
-          <div class="g-border">
-            <div class="inner glass-strong rounded-2xl p-6">
-              <div class="flex items-center justify-between">
-                <div class="font-semibold">Pro</div>
-                <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-400/10 border border-emerald-300/15 text-emerald-200">Recommended</span>
-              </div>
-              <div class="mt-4 text-4xl font-extrabold">$19</div>
-              <div class="mt-1 text-sm text-white/60">Best for shipping.</div>
-              <ul class="mt-5 space-y-2 text-sm text-white/75">
-                <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Better CTA hierarchy</li>
-                <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Pricing + FAQ ready</li>
-                <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Code panel + copy button</li>
-              </ul>
-              <a href="#contact" class="btn-shine mt-6 inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-violet-500/90 to-cyan-400/85 hover:from-violet-400/95 hover:to-cyan-300/90 transition shadow-glow">
-                <span class="h-4 w-4" data-lucide="badge-check"></span>
-                <span class="font-semibold">Choose Pro</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="glass rounded-2xl p-6 border border-white/10">
-            <div class="flex items-center justify-between">
-              <div class="font-semibold">Studio</div>
-              <span class="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-white/60">Teams</span>
-            </div>
-            <div class="mt-4 text-4xl font-extrabold">$49</div>
-            <div class="mt-1 text-sm text-white/60">For teams & products.</div>
-            <ul class="mt-5 space-y-2 text-sm text-white/70">
-              <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>More sections</li>
-              <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Advanced copy blocks</li>
-              <li class="flex items-center gap-2"><span class="h-4 w-4" data-lucide="check"></span>Priority support</li>
-            </ul>
-            <a href="#contact" class="mt-6 inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
-              <span class="h-4 w-4" data-lucide="users"></span>
-              <span class="font-semibold">Talk to us</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div class="reveal">
-        <div class="text-xs text-white/55">FAQ</div>
-        <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Questions, answered.</h2>
-        <p class="mt-3 text-white/70 max-w-2xl">Accordion ini sudah ada JS-nya; tinggal ganti pertanyaan dan jawaban.</p>
-
-        <div class="mt-8 grid gap-3">
+        <div class="mt-6 grid gap-3">
           <div class="glass rounded-2xl border border-white/10 overflow-hidden">
             <button class="faq-btn w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
               <div class="flex items-center gap-2 text-white/85 font-semibold">
                 <span class="h-4 w-4" data-lucide="help-circle"></span>
-                <span>Bisa dipakai untuk apa saja?</span>
+                <span>Ini cocok untuk produk apa?</span>
               </div>
               <span class="h-5 w-5 text-white/60 faq-ico" data-lucide="chevron-down"></span>
             </button>
             <div class="faq-panel hidden px-5 pb-5 text-sm text-white/65">
-              Bisa untuk landing produk apa pun: script hub, key system, bot, SaaS tools, portfolio dev-tool, dan lain-lain.
+              Cocok untuk script hub, key system, bot, SaaS kecil, atau portfolio produk yang pengen vibe AI modern.
             </div>
           </div>
 
@@ -651,12 +319,12 @@ astrionhub start --ui=ai-glass --port=3000
             <button class="faq-btn w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
               <div class="flex items-center gap-2 text-white/85 font-semibold">
                 <span class="h-4 w-4" data-lucide="help-circle"></span>
-                <span>Kenapa pakai 1 file?</span>
+                <span>Kenapa dipisah jadi beberapa file?</span>
               </div>
               <span class="h-5 w-5 text-white/60 faq-ico" data-lucide="chevron-down"></span>
             </button>
             <div class="faq-panel hidden px-5 pb-5 text-sm text-white/65">
-              Enak untuk cepat deploy, share, dan iterasi UI. Kalau nanti mau production besar, bisa dipisah jadi komponen Next.js.
+              Biar index fokus ke first impression + FAQ, dan halaman lain lebih rapi untuk konten detail.
             </div>
           </div>
 
@@ -664,103 +332,39 @@ astrionhub start --ui=ai-glass --port=3000
             <button class="faq-btn w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
               <div class="flex items-center gap-2 text-white/85 font-semibold">
                 <span class="h-4 w-4" data-lucide="help-circle"></span>
-                <span>Bagian mana yang wajib diganti?</span>
+                <span>Gimana ganti icon?</span>
               </div>
               <span class="h-5 w-5 text-white/60 faq-ico" data-lucide="chevron-down"></span>
             </button>
             <div class="faq-panel hidden px-5 pb-5 text-sm text-white/65">
-              Nama brand, headline, CTA link, pricing, dan contact link. Sisanya opsional.
+              Ganti nilai <span class="font-mono text-white/75">data-lucide="..."</span>, lalu pastikan <span class="font-mono text-white/75">lucide.createIcons()</span> kepanggil.
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
-      <div class="reveal grid lg:grid-cols-12 gap-4 items-stretch">
-        <div class="lg:col-span-7 glass rounded-2xl border border-white/10 p-6">
-          <div class="text-xs text-white/55">Contact</div>
-          <h3 class="mt-2 text-2xl font-extrabold tracking-tight">Want this customized for your product?</h3>
-          <p class="mt-3 text-white/70">Ganti link tombol di bawah ke Discord/WhatsApp/GitHub/Email milik kamu.</p>
-
-          <div class="mt-5 flex flex-col sm:flex-row gap-3">
-            <a href="#" class="btn-shine inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-black hover:bg-white/90 transition">
-              <span class="h-5 w-5" data-lucide="message-square"></span>
-              <span class="font-semibold">Open chat</span>
-            </a>
-            <a href="#" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
-              <span class="h-5 w-5" data-lucide="github"></span>
-              <span class="font-semibold">GitHub</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="lg:col-span-5 glass rounded-2xl border border-white/10 p-6">
-          <div class="flex items-center gap-2 text-sm text-white/80">
-            <span class="h-4 w-4" data-lucide="info"></span>
-            <span>Quick edit checklist</span>
-          </div>
-          <ul class="mt-4 space-y-2 text-sm text-white/70">
-            <li class="flex gap-2"><span class="h-4 w-4 mt-0.5" data-lucide="check"></span>Title + brand name</li>
-            <li class="flex gap-2"><span class="h-4 w-4 mt-0.5" data-lucide="check"></span>CTA button link</li>
-            <li class="flex gap-2"><span class="h-4 w-4 mt-0.5" data-lucide="check"></span>Feature text + icons</li>
-            <li class="flex gap-2"><span class="h-4 w-4 mt-0.5" data-lucide="check"></span>Pricing tier</li>
-            <li class="flex gap-2"><span class="h-4 w-4 mt-0.5" data-lucide="check"></span>Contact section</li>
-          </ul>
-          <div class="mt-4 text-xs text-white/50">
-            Icon list: ganti nilai <span class="font-mono text-white/70">data-lucide="..."</span> dengan nama icon di lucide.dev/icons.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="border-t border-white/10">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-        <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB. All rights reserved.</div>
+        <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB</div>
         <div class="flex flex-wrap gap-2 text-sm">
+          <a href="features.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Features</a>
+          <a href="pricing.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
           <a href="#home" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Top</a>
-          <a href="#features" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Features</a>
-          <a href="#pricing" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
         </div>
       </div>
     </footer>
   </main>
 
   <script>
-    // Icons
-    lucide.createIcons();
-
-    // Footer year
+    lucide.createIcons(); // Lucide usage [web:18]
     document.getElementById("year").textContent = new Date().getFullYear();
 
     // Mobile menu
     const btnMenu = document.getElementById("btnMenu");
     const mobileMenu = document.getElementById("mobileMenu");
-    btnMenu?.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-    });
-
-    // Close mobile menu on click link
-    mobileMenu?.querySelectorAll("a").forEach(a => {
-      a.addEventListener("click", () => mobileMenu.classList.add("hidden"));
-    });
-
-    // Copy code
-    const btnCopy = document.getElementById("btnCopy");
-    const codeBlock = document.getElementById("codeBlock");
-    const copyText = document.getElementById("copyText");
-    btnCopy?.addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(codeBlock.innerText);
-        copyText.textContent = "Copied";
-        setTimeout(() => (copyText.textContent = "Copy"), 1200);
-      }catch(e){
-        copyText.textContent = "Failed";
-        setTimeout(() => (copyText.textContent = "Copy"), 1200);
-      }
-    });
+    btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+    mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
 
     // FAQ accordion
     document.querySelectorAll(".faq-btn").forEach(btn => {
@@ -773,20 +377,9 @@ astrionhub start --ui=ai-glass --port=3000
         document.querySelectorAll(".faq-panel").forEach(p => p.classList.add("hidden"));
         document.querySelectorAll(".faq-ico").forEach(i => i.style.transform = "rotate(0deg)");
 
-        if (!isOpen) {
-          panel.classList.remove("hidden");
-          ico.style.transform = "rotate(180deg)";
-        }
+        if (!isOpen) { panel.classList.remove("hidden"); ico.style.transform = "rotate(180deg)"; }
       });
     });
-
-    // Reveal on scroll
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add("show");
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
   </script>
 </body>
 </html>
