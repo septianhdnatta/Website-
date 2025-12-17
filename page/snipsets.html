@@ -1,0 +1,619 @@
+    function pickTitle(item) {
+      return safeText(item.title ?? item.name ?? item.feature ?? item.id ?? "Untitled");
+    }
+
+    function pickDesc(item) {
+      return safeText(item.description ?? item.desc ?? item.detail ?? item.notes ?? "");
+    }
+
+    function pickVersion(item) {
+      return safeText(item.version ?? item.ver ?? item.v ?? item.caseVersion ?? item.pluginVersion ?? "");
+    }
+
+    function pickIcon(item) {
+      return safeText(item.icon ?? item.lucide ?? item.ico ?? "code-2").trim() || "code-2";
+    }
+
+    function getTypeGuess(item) {
+      const t = safeText(item.type ?? item.kind ?? item.category ?? "").toLowerCase().trim();
+      if (["case","cjs","esm"].includes(t)) return t;
+      return "all";
+    }
+
+    function extractVariants(item) {
+      // Flexible schema:
+      // - item.variants: { case:"...", cjs:"...", esm:"..." } or any keys
+      // - item.code: { case/cjs/esm } or string
+      // - item.case / item.cjs / item.esm / item.plugin_cjs / item.plugin_esm
+      const out = [];
+
+      const add = (id, label, code, hintType) => {
+        const c = toCodeString(code);
+        if (!c.trim()) return;
+        out.push({ id, label, type: hintType || id, code: c });
+      };
+
+      const variants = item.variants;
+      if (variants && typeof variants === "object" && !Array.isArray(variants)) {
+        for (const [k, v] of Object.entries(variants)) {
+          const kk = String(k).trim();
+          add(kk.toLowerCase(), kk.toUpperCase(), v, kk.toLowerCase());
+        }
+      }
+
+      const code = item.code;
+      if (code && typeof code === "object" && !Array.isArray(code)) {
+        // Prefer known keys
+        add("case", "Case", code.case ?? code.example ?? code.sample ?? "", "case");
+        add("cjs", "Plugin CJS", code.cjs ?? code["plugin cjs"] ?? code.plugin_cjs ?? "", "cjs");
+        add("esm", "Plugin ESM", code.esm ?? code["plugin esm"] ?? code.plugin_esm ?? "", "esm");
+
+        // Add any remaining keys
+        for (const [k, v] of Object.entries(code)) {
+          const kk = String(k).toLowerCase();
+          if (["case","example","sample","cjs","esm","plugin_cjs","plugin_esm","plugin cjs","plugin esm"].includes(kk)) continue;
+          add(kk, k, v, kk);
+        }
+      } else if (typeof code === "string") {
+        add("code", "Code", code, getTypeGuess(item));
+      }
+
+      // Direct fields fallbacks
+      add("case", "Case", item.case ?? item.example ?? item.sample ?? "", "case");
+      add("cjs", "Plugin CJS", item.cjs ?? item.plugin_cjs ?? item.pluginCjs ?? item["plugin cjs"] ?? "", "cjs");
+      add("esm", "Plugin ESM", item.esm ?? item.plugin_esm ?? item.pluginEsm ?? item["plugin esm"] ?? "", "esm");
+
+      // De-dupe by id
+      const seen = new Set();
+      return out.filter(v => (seen.has(v.id) ? false : (seen.add(v.id), true)));
+    }
+
+    function linesPreview(code, maxLines = 10) {
+      const s = toCodeString(code);
+      const lines = s.split("\n");
+      return lines.slice(0, maxLines).join("\n");
+    }
+
+    function msToAge(ms) {
+      const sec = Math.max(0, Math.floor(ms / 1000));
+      const m = Math.floor(sec / 60);
+      const h = Math.floor(m / 60);
+      const d = Math.floor(h / 24);
+      if (d > 0) return `${d}d`;
+      if (h > 0) return `${h}h`;
+      if (m > 0) return `${m}m`;
+      return `${sec}s`;
+    }
+
+    function lsGet(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        const v = JSON.parse(raw);
+        return (v && typeof v === "object") ? v : fallback;
+      } catch { return fallback; }
+    }
+
+    function lsSet(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+    }
+
+    // Simple stable hash (FNV-1a)
+    function hashStr(str) {
+      const s = String(str);
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h >>> 0).toString(16);
+    }
+
+    function itemHash(item, variants) {
+      const base = [
+        pickTitle(item),
+        pickDesc(item),
+        pickVersion(item),
+        safeText(item.type ?? item.kind ?? ""),
+        variants.map(v => v.id + ":" + v.code).join("\n---\n")
+      ].join("\n#\n");
+      return hashStr(base);
+    }
+
+    function show(el, yes) { el.classList.toggle("hidden", !yes); }
+
+    // ===== UI badges =====
+    function badgeNew(ageMs) {
+      // <24h => NEW, else show "Xd"
+      const age = msToAge(ageMs);
+      const isNew = ageMs <= NEW_TTL_MS;
+      const label = isNew ? "NEW" : age;
+      const cls = isNew
+        ? "bg-cyan-400/12 border-cyan-300/15 text-cyan-100"
+        : "bg-cyan-400/8 border-cyan-300/10 text-cyan-100/75";
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border ${cls}">${label}</span>`;
+    }
+
+    function badgeUpd(ageMs) {
+      const age = msToAge(ageMs);
+      const isHot = ageMs <= UPDATED_TTL_MS;
+      const label = isHot ? "UPD" : age;
+      const cls = isHot
+        ? "bg-violet-400/12 border-violet-300/15 text-violet-100"
+        : "bg-violet-400/8 border-violet-300/10 text-violet-100/75";
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border ${cls}">${label}</span>`;
+    }
+
+    function badgeType(type) {
+      if (type === "case") return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-sky-400/10 border border-sky-300/15 text-sky-100">CASE</span>`;
+      if (type === "cjs") return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-400/10 border border-amber-300/15 text-amber-100">CJS</span>`;
+      if (type === "esm") return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-teal-400/10 border border-teal-300/15 text-teal-100">ESM</span>`;
+      return "";
+    }
+
+    // ===== Fetch JSON =====
+    async function fetchFirstWorkingJson() {
+      let lastErr = null;
+      for (const base of JSON_URLS) {
+        try {
+          const url = base + (base.includes("?") ? "&" : "?") + "t=" + Date.now();
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          const lastModified = res.headers.get("last-modified");
+          const data = await res.json();
+          return { base, data, lastModified };
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr || new Error("Fetch failed");
+    }
+
+    // ===== State =====
+    const state = {
+      items: [],
+      view: [],
+      q: "",
+      filter: "all",
+      lastModified: "",
+      baseUrl: ""
+    };
+
+    // ===== Render card =====
+    function renderCard(it) {
+      const title = escapeHTML(it.title);
+      const desc = escapeHTML(it.desc || "—");
+      const icon = escapeHTML(it.icon || "code-2");
+
+      const badges = [
+        it.newAgeMs != null ? badgeNew(it.newAgeMs) : "",
+        it.updAgeMs != null ? badgeUpd(it.updAgeMs) : "",
+        it.typeBadge ? it.typeBadge : ""
+      ].filter(Boolean).join("");
+
+      const meta = [
+        it.version ? `v${escapeHTML(it.version)}` : "",
+        it.variants?.length ? `${it.variants.length} variant` : ""
+      ].filter(Boolean).join(" • ");
+
+      const preview = escapeHTML(linesPreview(it.previewCode, 10));
+
+      return `
+        <button data-open="${escapeHTML(it.key)}"
+          class="text-left glass rounded-2xl border border-white/10 p-5 w-full max-w-full overflow-hidden hover:bg-white/7 hover:border-white/20 transition">
+          <div class="flex items-start justify-between gap-3 min-w-0">
+            <div class="flex items-start gap-3 min-w-0">
+              <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                <span class="h-5 w-5 text-white/85" data-lucide="${icon}"></span>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 min-w-0">
+                  <div class="font-semibold text-white/90 truncate min-w-0">${title}</div>
+                </div>
+                <div class="mt-1 text-xs text-white/55 break-all">${meta || ""}</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap justify-end flex-none">
+              ${badges}
+              <span class="h-4 w-4 text-white/55" data-lucide="arrow-up-right"></span>
+            </div>
+          </div>
+
+          <div class="mt-4 glass rounded-2xl border border-white/10 bg-[#070A12] overflow-hidden w-full max-w-full">
+            <div class="code-fade">
+              <pre class="mono text-[12px] leading-relaxed p-4 overflow-hidden max-h-[160px] whitespace-pre break-all text-white/80">${preview}</pre>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <div class="text-sm text-white/70 break-words">${desc}</div>
+          </div>
+        </button>
+      `;
+    }
+
+    // ===== Modal =====
+    const modal = $("modal");
+    const modalBackdrop = $("modalBackdrop");
+    const btnClose = $("btnClose");
+    const btnCopy = $("btnCopy");
+    const mTitle = $("mTitle");
+    const mDesc = $("mDesc");
+    const mCode = $("mCode");
+    const mMeta = $("mMeta");
+    const mBadges = $("mBadges");
+    const tabs = $("tabs");
+    const mTabLabel = $("mTabLabel");
+    const toast = $("toast");
+
+    let modalItem = null;
+    let modalVariant = null;
+
+    function toastMsg(msg) {
+      toast.textContent = msg;
+      toast.classList.remove("hidden");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.add("hidden"), 2200);
+    }
+
+    function openModal(key) {
+      const it = state.items.find(x => x.key === key);
+      if (!it) return;
+
+      modalItem = it;
+      modalVariant = it.variants[0] || { id: "code", label: "Code", code: it.previewCode || "" };
+
+      mTitle.textContent = it.title;
+      mDesc.textContent = it.desc || "—";
+
+      const meta = [
+        it.version ? `v${it.version}` : "",
+        it.variants?.length ? `${it.variants.length} variant` : ""
+      ].filter(Boolean).join(" • ");
+      mMeta.textContent = meta;
+
+      // badges
+      const bb = [];
+      if (it.newAgeMs != null) bb.push(badgeNew(it.newAgeMs));
+      if (it.updAgeMs != null) bb.push(badgeUpd(it.updAgeMs));
+      mBadges.innerHTML = bb.join("");
+
+      // tabs
+      tabs.innerHTML = "";
+      for (const v of it.variants) {
+        const active = (v.id === modalVariant.id);
+        const btn = document.createElement("button");
+        btn.className = "px-3 py-1.5 rounded-full text-sm border border-white/10 transition " +
+          (active ? "bg-white text-black font-semibold" : "bg-white/5 hover:bg-white/8 text-white/80");
+        btn.textContent = v.label;
+        btn.onclick = () => setModalVariant(v.id);
+        tabs.appendChild(btn);
+      }
+
+      setModalVariant(modalVariant.id);
+
+      show(modal, true);
+      document.body.classList.add("overflow-hidden");
+      lucide.createIcons(); // ensure icons rendered [web:18]
+    }
+
+    function closeModal() {
+      show(modal, false);
+      document.body.classList.remove("overflow-hidden");
+      modalItem = null;
+      modalVariant = null;
+    }
+
+    function setModalVariant(variantId) {
+      if (!modalItem) return;
+      const v = modalItem.variants.find(x => x.id === variantId) || modalItem.variants[0];
+      modalVariant = v;
+      mTabLabel.textContent = v?.label || "Code";
+      mCode.textContent = v?.code || "";
+      // refresh tab active styles
+      [...tabs.children].forEach((b) => {
+        const active = (b.textContent === (v?.label || "Code"));
+        b.className = "px-3 py-1.5 rounded-full text-sm border border-white/10 transition " +
+          (active ? "bg-white text-black font-semibold" : "bg-white/5 hover:bg-white/8 text-white/80");
+      });
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand("copy");
+          ta.remove();
+          return ok;
+        } catch {
+          return false;
+        }
+      }
+    }
+
+    btnCopy.addEventListener("click", async () => {
+      const txt = modalVariant?.code || "";
+      const ok = await copyToClipboard(txt);
+      toastMsg(ok ? "Copied." : "Copy failed.");
+    });
+
+    btnClose.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", closeModal);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+    });
+
+    // ===== Search & Filter =====
+    function normalizeQuery(s) {
+      return safeText(s, "").toLowerCase().trim();
+    }
+
+    function searchableText(it) {
+      const vtxt = (it.variants || []).map(v => v.code).join("\n");
+      return normalizeQuery([it.title, it.desc, it.version, it.typeGuess, vtxt].join("\n"));
+    }
+
+    function applyView() {
+      const q = normalizeQuery(state.q);
+      const f = state.filter;
+
+      const view = state.items.filter(it => {
+        if (f !== "all") {
+          // show items that contain that variant
+          const has = it.variants.some(v => v.type === f || v.id === f);
+          if (!has) return false;
+        }
+        if (!q) return true;
+        return it.searchText.includes(q);
+      });
+
+      state.view = view;
+
+      // meta
+      $("resultMeta").textContent = `${view.length}/${state.items.length}`;
+
+      // render
+      const grid = $("grid");
+      grid.innerHTML = view.map(renderCard).join("");
+      show(grid, true);
+
+      // bind open
+      grid.querySelectorAll("[data-open]").forEach(btn => {
+        btn.addEventListener("click", () => openModal(btn.getAttribute("data-open")));
+      });
+
+      lucide.createIcons(); // icons after DOM injection [web:18]
+    }
+
+    // ===== Stats =====
+    function updateStats() {
+      const total = state.items.length;
+      const nNew = state.items.filter(x => x.newAgeMs != null && x.newAgeMs <= NEW_TTL_MS).length;
+      const nUpd = state.items.filter(x => x.updAgeMs != null && x.updAgeMs <= UPDATED_TTL_MS).length;
+
+      const nCase = state.items.filter(x => x.variants.some(v => v.type === "case" || v.id === "case")).length;
+      const nCjs = state.items.filter(x => x.variants.some(v => v.type === "cjs" || v.id === "cjs")).length;
+      const nEsm = state.items.filter(x => x.variants.some(v => v.type === "esm" || v.id === "esm")).length;
+
+      $("statTotal").textContent = String(total);
+      $("statNew").textContent = String(nNew);
+      $("statUpd").textContent = String(nUpd);
+      $("statCase").textContent = String(nCase);
+      $("statCjs").textContent = String(nCjs);
+      $("statEsm").textContent = String(nEsm);
+    }
+
+    // ===== Load =====
+    async function loadSnipsets() {
+      show($("stateLoading"), true);
+      show($("stateError"), false);
+      show($("stateEmpty"), false);
+      show($("grid"), false);
+      $("grid").innerHTML = "";
+
+      const now = nowMs();
+
+      let seenMap = lsGet(SEEN_KEY, {});
+      let hashMap = lsGet(HASH_KEY, {});
+      let updMap = lsGet(UPDATED_KEY, {});
+
+      // prune updated map older than TTL
+      const updPruned = {};
+      for (const [k, ts] of Object.entries(updMap)) {
+        const n = Number(ts);
+        if (Number.isFinite(n) && (now - n) <= UPDATED_TTL_MS) updPruned[k] = n;
+      }
+      updMap = updPruned;
+
+      try {
+        const { base, data, lastModified } = await fetchFirstWorkingJson();
+        state.baseUrl = base;
+        state.lastModified = lastModified || "";
+
+        $("btnOpenJson").onclick = () => window.open(base, "_blank", "noopener,noreferrer");
+
+        const raw = normalizeItems(data);
+        if (!raw.length) {
+          show($("stateLoading"), false);
+          show($("stateEmpty"), true);
+          state.items = [];
+          updateStats();
+          applyView();
+          return;
+        }
+
+        // Build items
+        const items = raw.map((item, idx) => {
+          const key = getKey(item, idx);
+
+          if (seenMap[key] === undefined) seenMap[key] = now;
+
+          const variants = extractVariants(item);
+          const h = itemHash(item, variants);
+
+          const oldHash = hashMap[key];
+          if (oldHash && oldHash !== h) {
+            updMap[key] = now; // mark as updated
+          }
+          hashMap[key] = h;
+
+          const title = pickTitle(item);
+          const desc = pickDesc(item);
+          const version = pickVersion(item);
+          const icon = pickIcon(item);
+
+          const firstSeen = Number(seenMap[key] ?? now);
+          const newAgeMs = now - firstSeen;
+
+          const updTs = updMap[key] !== undefined ? Number(updMap[key]) : null;
+          const updAgeMs = (updTs != null && Number.isFinite(updTs)) ? (now - updTs) : null;
+
+          // Type badge based on filter relevance (if item says type)
+          const tGuess = getTypeGuess(item);
+          const typeBadge = (tGuess === "case" || tGuess === "cjs" || tGuess === "esm") ? badgeType(tGuess) : "";
+
+          const previewVariant =
+            variants.find(v => v.id === "case") ||
+            variants[0] ||
+            { id:"code", label:"Code", type:tGuess, code: toCodeString(item.code ?? "") };
+
+          const previewCode = previewVariant.code;
+
+          const out = {
+            key,
+            title,
+            desc,
+            version,
+            icon,
+            variants,
+            previewCode,
+            typeGuess: tGuess,
+            typeBadge,
+            newAgeMs,
+            updAgeMs
+          };
+
+          out.searchText = searchableText(out);
+          return out;
+        });
+
+        // Sort: NEW first (recent), then UPDATED (recent), then alpha
+        items.sort((a, b) => {
+          const aNew = (a.newAgeMs ?? 1e18);
+          const bNew = (b.newAgeMs ?? 1e18);
+          const aIsNew = aNew <= NEW_TTL_MS;
+          const bIsNew = bNew <= NEW_TTL_MS;
+          if (aIsNew !== bIsNew) return aIsNew ? -1 : 1;
+
+          const aUpd = (a.updAgeMs ?? 1e18);
+          const bUpd = (b.updAgeMs ?? 1e18);
+          const aIsUpd = aUpd <= UPDATED_TTL_MS;
+          const bIsUpd = bUpd <= UPDATED_TTL_MS;
+          if (aIsUpd !== bIsUpd) return aIsUpd ? -1 : 1;
+
+          return a.title.localeCompare(b.title);
+        });
+
+        // Persist
+        lsSet(SEEN_KEY, seenMap);
+        lsSet(HASH_KEY, hashMap);
+        lsSet(UPDATED_KEY, updMap);
+
+        state.items = items;
+
+        show($("stateLoading"), false);
+        show($("grid"), true);
+
+        updateStats();
+        applyView();
+      } catch (e) {
+        show($("stateLoading"), false);
+        show($("stateError"), true);
+        $("errorText").textContent = e?.message ? String(e.message) : "Unknown error";
+        state.items = [];
+        updateStats();
+        applyView();
+      }
+    }
+
+    // ===== Boot =====
+    (function boot() {
+      // icons for static DOM [web:18]
+      lucide.createIcons();
+
+      $("year").textContent = new Date().getFullYear();
+
+      // menu
+      const btnMenu = $("btnMenu");
+      const mobileMenu = $("mobileMenu");
+      btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+      mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+
+      // search
+      $("q").addEventListener("input", (e) => {
+        state.q = e.target.value;
+        applyView();
+      });
+
+      $("btnClear").addEventListener("click", () => {
+        $("q").value = "";
+        state.q = "";
+        applyView();
+      });
+
+      // filters
+      document.querySelectorAll(".chip").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.filter = btn.dataset.filter || "all";
+          document.querySelectorAll(".chip").forEach(b => {
+            b.classList.toggle("bg-white", b === btn);
+            b.classList.toggle("text-black", b === btn);
+            b.classList.toggle("font-semibold", b === btn);
+            if (b !== btn) {
+              b.classList.remove("bg-white","text-black","font-semibold");
+              b.classList.add("bg-white/5","text-white/80");
+            }
+          });
+          applyView();
+        });
+      });
+
+      // buttons
+      $("btnRefresh").addEventListener("click", loadSnipsets);
+      $("btnResetMarks").addEventListener("click", () => {
+        localStorage.removeItem(SEEN_KEY);
+        localStorage.removeItem(HASH_KEY);
+        localStorage.removeItem(UPDATED_KEY);
+        loadSnipsets();
+      });
+
+      // reveal
+      const el = document.querySelector(".reveal");
+      if (el) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
+        }, { threshold: 0.12 });
+        io.observe(el);
+      } else {
+        document.querySelectorAll(".reveal").forEach(x => x.classList.add("show"));
+      }
+
+      // default selected filter
+      const firstChip = document.querySelector('.chip[data-filter="all"]');
+      if (firstChip) firstChip.click();
+
+      loadSnipsets();
+    })();
+  </script>
+</body>
+</html>
