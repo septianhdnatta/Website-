@@ -1,3 +1,4 @@
+
 <!-- FILE: features.html -->
 <!doctype html>
 <html lang="id">
@@ -23,18 +24,10 @@
             sans: ["Inter", "ui-sans-serif", "system-ui"],
             mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
           },
-          boxShadow: {
-            glow: "0 0 0 1px rgba(255,255,255,.08), 0 20px 70px rgba(0,0,0,.60)",
-            soft: "0 0 0 1px rgba(255,255,255,.06), 0 10px 30px rgba(0,0,0,.45)"
-          },
           keyframes: {
             shimmer: { "0%": { transform: "translateX(-120%)" }, "100%": { transform: "translateX(120%)" } },
-            pulseGlow: { "0%,100%": { opacity: ".55" }, "50%": { opacity: ".9" } },
           },
-          animation: {
-            shimmer: "shimmer 2.8s ease-in-out infinite",
-            pulseGlow: "pulseGlow 3.2s ease-in-out infinite"
-          }
+          animation: { shimmer: "shimmer 2.8s ease-in-out infinite" }
         }
       }
     }
@@ -105,6 +98,9 @@
     }
     .reveal{ opacity:0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
+    .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
+    .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
+    .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
   </style>
 </head>
 
@@ -115,7 +111,7 @@
   <!-- NAV -->
   <header class="sticky top-0 z-50">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
-      <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between shadow-soft">
+      <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between">
         <a href="index.html" class="flex items-center gap-3">
           <div class="g-border h-10 w-10 rounded-xl overflow-hidden grid place-items-center">
             <div class="inner h-full w-full grid place-items-center">
@@ -158,38 +154,42 @@
       <div class="g-border">
         <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
           <div class="flex items-start justify-between gap-4 flex-wrap">
-            <div>
+            <div class="min-w-0">
               <div class="text-xs text-white/55">Features</div>
-              <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Auto-loaded from GitHub JSON</h1>
-              <p class="mt-3 text-white/70 max-w-2xl">
-                Fitur akan otomatis update sesuai isi <span class="font-mono text-white/75">feature.json</span>. Item baru bakal muncul badge “NEW”.
-              </p>
+              <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Status board</h1>
+              <p class="mt-3 text-white/70 max-w-2xl">Statistik di atas, dan fitur dikelompokkan berdasarkan tag.</p>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button id="btnRefresh"
-                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+                class="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
                 <span class="h-4 w-4" data-lucide="refresh-cw"></span>
                 <span class="text-sm font-semibold">Refresh</span>
               </button>
 
               <button id="btnResetNew"
-                class="btn-shine inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition">
+                class="btn-shine inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition">
                 <span class="h-4 w-4" data-lucide="badge-check"></span>
                 <span class="text-sm font-semibold">Reset NEW</span>
+              </button>
+
+              <button id="btnOpenJson"
+                class="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition">
+                <span class="h-4 w-4" data-lucide="link"></span>
+                <span class="text-sm font-semibold">JSON</span>
               </button>
             </div>
           </div>
 
           <div class="mt-5 flex items-center justify-between gap-3 flex-wrap text-xs text-white/55">
             <div class="flex items-center gap-2">
-              <span class="h-4 w-4" data-lucide="link"></span>
-              <a id="srcLink" class="hover:text-white transition underline decoration-white/20 underline-offset-4" target="_blank" rel="noreferrer">Open JSON source</a>
+              <span class="h-4 w-4" data-lucide="activity"></span>
+              <span id="metaInfo" class="text-white/60">Idle</span>
             </div>
-            <div id="metaInfo" class="text-white/50"></div>
+            <div class="text-white/45" id="lastUpdated"></div>
           </div>
 
-          <!-- States -->
+          <!-- STATES -->
           <div id="stateLoading" class="mt-7 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div class="glass rounded-2xl border border-white/10 p-5 animate-pulse">
               <div class="h-5 w-28 bg-white/10 rounded"></div>
@@ -214,9 +214,6 @@
               <div>
                 <div class="font-semibold text-rose-100">Gagal load feature.json</div>
                 <div id="errorText" class="mt-1 text-sm text-rose-100/80"></div>
-                <div class="mt-3 text-xs text-rose-100/60">
-                  Hint: pastikan URL raw benar dan file JSON valid.
-                </div>
               </div>
             </div>
           </div>
@@ -231,60 +228,104 @@
             </div>
           </div>
 
-          <!-- Grid -->
-          <div id="featureGrid" class="hidden mt-7 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-
-          <!-- NEW: Stats panel under grid -->
-          <div id="statsPanel" class="hidden mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <!-- Total -->
+          <!-- STATS TOP -->
+          <div id="statsPanel" class="hidden mt-7 grid grid-cols-2 lg:grid-cols-5 gap-3">
             <div class="glass rounded-2xl border border-white/10 p-4">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-sm text-white/80">
-                  <span class="h-4 w-4" data-lucide="layers"></span>
-                  <span>Total</span>
-                </div>
-                <span class="text-xs text-white/55">Features</span>
+              <div class="flex items-center justify-between text-xs text-white/60">
+                <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="layers"></span>Total</span>
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
               </div>
               <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statTotal">0</div>
-              <div class="mt-3 flex items-center gap-2 text-xs text-white/55">
-                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-                <span>OK</span>
-              </div>
             </div>
 
-            <!-- New -->
             <div class="glass rounded-2xl border border-white/10 p-4">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-sm text-white/80">
-                  <span class="h-4 w-4" data-lucide="sparkles"></span>
-                  <span>New</span>
-                </div>
-                <span class="text-xs text-white/55">This load</span>
+              <div class="flex items-center justify-between text-xs text-white/60">
+                <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="sparkles"></span>New</span>
+                <span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span>
               </div>
               <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statNew">0</div>
-              <div class="mt-3 flex items-center gap-2 text-xs text-white/55">
-                <span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span>
-                <span>Badge NEW</span>
+              <div class="mt-2 text-[11px] text-white/45">Max 2 • TTL 24h</div>
+            </div>
+
+            <div class="glass rounded-2xl border border-white/10 p-4">
+              <div class="flex items-center justify-between text-xs text-white/60">
+                <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="arrow-up-right"></span>Update</span>
+                <span class="h-2.5 w-2.5 rounded-full bg-violet-300"></span>
+              </div>
+              <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statUpdate">0</div>
+            </div>
+
+            <div class="glass rounded-2xl border border-white/10 p-4">
+              <div class="flex items-center justify-between text-xs text-white/60">
+                <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="triangle-alert"></span>Error</span>
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+              </div>
+              <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statErr">0</div>
+            </div>
+
+            <div class="glass rounded-2xl border border-white/10 p-4 col-span-2 lg:col-span-1">
+              <div class="flex items-center justify-between text-xs text-white/60">
+                <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="wrench"></span>Maintenance</span>
+                <span class="h-2.5 w-2.5 rounded-full bg-amber-300"></span>
+              </div>
+              <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statMaint">0</div>
+            </div>
+          </div>
+
+          <!-- LIST BY TAGS -->
+          <div id="tagBoard" class="hidden mt-6 grid lg:grid-cols-12 gap-4">
+            <div class="lg:col-span-6 space-y-4">
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2 text-white/85 font-semibold">
+                    <span class="h-4 w-4" data-lucide="sparkles"></span>
+                    <span>NEW</span>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-cyan-400/12 border border-cyan-300/15 text-cyan-100" id="badgeNew">0</span>
+                  </div>
+                  <div class="text-xs text-white/55">Last 24h</div>
+                </div>
+                <div id="listNew" class="mt-4 grid gap-2"></div>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2 text-white/85 font-semibold">
+                    <span class="h-4 w-4" data-lucide="arrow-up-right"></span>
+                    <span>UPDATE</span>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-violet-400/12 border border-violet-300/15 text-violet-100" id="badgeUpdate">0</span>
+                  </div>
+                  <div class="text-xs text-white/55">Changes</div>
+                </div>
+                <div id="listUpdate" class="mt-4 grid gap-2 max-h-[420px] overflow-auto pr-1 scrollbar"></div>
               </div>
             </div>
 
-            <!-- Errors -->
-            <div class="glass rounded-2xl border border-white/10 p-4">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-sm text-white/80">
-                  <span class="h-4 w-4" data-lucide="triangle-alert"></span>
-                  <span>Error</span>
+            <div class="lg:col-span-6 space-y-4">
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2 text-white/85 font-semibold">
+                    <span class="h-4 w-4" data-lucide="triangle-alert"></span>
+                    <span>ERROR</span>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-rose-400/12 border border-rose-300/15 text-rose-100" id="badgeError">0</span>
+                  </div>
+                  <div class="text-xs text-white/55">Issues</div>
                 </div>
-                <span class="text-xs text-white/55">Fetch</span>
+                <div id="listError" class="mt-4 grid gap-2"></div>
               </div>
-              <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statErr">0</div>
-              <div class="mt-3 flex items-center gap-2 text-xs text-white/55">
-                <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
-                <span>Fail</span>
+
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2 text-white/85 font-semibold">
+                    <span class="h-4 w-4" data-lucide="wrench"></span>
+                    <span>MAINTENANCE</span>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-400/12 border border-amber-300/15 text-amber-100" id="badgeMaint">0</span>
+                  </div>
+                  <div class="text-xs text-white/55">Downtime</div>
+                </div>
+                <div id="listMaint" class="mt-4 grid gap-2"></div>
               </div>
             </div>
           </div>
-          <!-- /Stats -->
 
         </div>
       </div>
@@ -304,16 +345,17 @@
 
   <script>
     // ===== CONFIG =====
-    const FEATURES_URL = "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/feature.json";
-    const STORAGE_KEY = "astrionhub_seen_feature_keys_v1";
+    const FEATURES_URLS = [
+      "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/feature.json",
+      "https://raw.githubusercontent.com/septianhdnatta/Website-/main/db/feature.json"
+    ];
 
-    // ===== Helpers =====
+    const NEW_TTL_MS = 24 * 60 * 60 * 1000;  // 24 jam
+    const NEW_LIMIT = 2;                     // tampil max 1-2
+    const SEEN_TS_KEY = "astrionhub_feature_first_seen_ts_v1";
+
     const $ = (id) => document.getElementById(id);
-
-    function safeText(v, fallback="") {
-      if (v === null || v === undefined) return fallback;
-      return String(v);
-    }
+    const safeText = (v, fallback="") => (v === null || v === undefined) ? fallback : String(v);
 
     function normalizeItems(data) {
       if (Array.isArray(data)) return data;
@@ -323,184 +365,283 @@
       return [];
     }
 
-    function getFeatureKey(item, idx) {
-      return safeText(item.id ?? item.key ?? item.slug ?? item.code ?? item.title ?? item.name ?? idx).trim();
-    }
-
     function truthy(v) {
       return v === true || v === 1 || v === "1" || (typeof v === "string" && v.toLowerCase() === "true");
     }
 
-    function getSeenSet() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return new Set();
-        const arr = JSON.parse(raw);
-        if (!Array.isArray(arr)) return new Set();
-        return new Set(arr.map(String));
-      } catch {
-        return new Set();
+    function getFeatureKey(item, idx) {
+      return safeText(item.id ?? item.key ?? item.slug ?? item.code ?? item.title ?? item.name ?? idx).trim();
+    }
+
+    function getTag(item) {
+      let t = item.tag ?? item.status ?? item.badge ?? item.type ?? "";
+      if (Array.isArray(t)) t = t[0] ?? "";
+      t = String(t).toLowerCase().trim();
+
+      if (t === "baru") t = "new";
+      if (t === "updated") t = "update";
+      if (t === "bug") t = "error";
+      if (t === "maint") t = "maintenance";
+
+      if (!t) {
+        if (truthy(item.new) || truthy(item.isNew) || truthy(item.is_new)) t = "new";
+        else if (truthy(item.maintenance) || truthy(item.maint)) t = "maintenance";
+        else if (truthy(item.error) || truthy(item.isError)) t = "error";
+        else if (truthy(item.update) || truthy(item.updated)) t = "update";
       }
+
+      if (!["new","update","error","maintenance"].includes(t)) t = "update";
+      return t;
     }
 
-    function saveSeenSet(set) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set))); } catch {}
+    function getSeenMap() {
+      try {
+        const raw = localStorage.getItem(SEEN_TS_KEY);
+        if (!raw) return {};
+        const obj = JSON.parse(raw);
+        return (obj && typeof obj === "object") ? obj : {};
+      } catch { return {}; }
     }
 
-    function show(el, yes) {
-      el.classList.toggle("hidden", !yes);
+    function saveSeenMap(obj) {
+      try { localStorage.setItem(SEEN_TS_KEY, JSON.stringify(obj)); } catch {}
     }
 
-    function setStats({ total=0, fresh=0, err=0 }) {
-      $("statTotal").textContent = String(total);
-      $("statNew").textContent = String(fresh);
-      $("statErr").textContent = String(err);
-      show($("statsPanel"), true);
+    function pruneSeenMap(obj, nowMs) {
+      // hanya simpan entry yang masih relevan untuk TTL NEW
+      const out = {};
+      for (const [k, v] of Object.entries(obj)) {
+        const n = Number(v);
+        if (Number.isFinite(n) && (nowMs - n) <= NEW_TTL_MS) out[k] = n;
+      }
+      return out;
     }
 
-    function renderFeatureCard({ title, desc, icon, link, isNew, badgeText }) {
-      const aOpen = link ? "a" : "div";
+    function show(el, yes) { el.classList.toggle("hidden", !yes); }
+
+    function badgeHTML(tag) {
+      if (tag === "new") return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-400/12 border border-cyan-300/15 text-cyan-100">NEW</span>`;
+      if (tag === "update") return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-violet-400/12 border border-violet-300/15 text-violet-100">UPDATE</span>`;
+      if (tag === "error") return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-400/12 border border-rose-300/15 text-rose-100">ERROR</span>`;
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-400/12 border border-amber-300/15 text-amber-100">MAINT</span>`;
+    }
+
+    function iconForTag(tag) {
+      if (tag === "new") return "sparkles";
+      if (tag === "update") return "arrow-up-right";
+      if (tag === "error") return "triangle-alert";
+      return "wrench";
+    }
+
+    function renderItemCard(item) {
+      const title = safeText(item.title ?? item.name ?? "Untitled");
+      const desc = safeText(item.description ?? item.desc ?? item.detail ?? item.text ?? "");
+      const icon = safeText(item.icon ?? item.lucide ?? iconForTag(item.__tag)).trim() || iconForTag(item.__tag);
+      const link = safeText(item.link ?? item.url ?? item.href ?? "").trim();
+
+      const tagOpen = link ? "a" : "div";
       const hrefAttr = link ? `href="${link}" target="_blank" rel="noreferrer"` : "";
-      const clickHint = link ? `
-        <span class="ml-auto text-xs text-white/55 inline-flex items-center gap-1">
-          <span>Open</span><span class="h-4 w-4" data-lucide="arrow-up-right"></span>
-        </span>` : "";
 
       return `
-        <${aOpen} ${hrefAttr}
-          class="group glass rounded-2xl border border-white/10 p-5 transition hover:border-white/20 hover:bg-white/7">
+        <${tagOpen} ${hrefAttr}
+          class="glass rounded-2xl border border-white/10 p-4 hover:bg-white/7 hover:border-white/20 transition">
           <div class="flex items-start gap-3">
-            <div class="h-11 w-11 rounded-2xl border border-white/10 bg-white/5 grid place-items-center">
+            <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
               <span class="h-5 w-5 text-white/85" data-lucide="${icon}"></span>
             </div>
 
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2">
                 <div class="font-semibold text-white/90 truncate">${title}</div>
-                ${isNew ? `
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold
-                    bg-emerald-400/12 border border-emerald-300/15 text-emerald-200">
-                    ${badgeText || "NEW"}
-                  </span>` : ""}
+                ${badgeHTML(item.__tag)}
               </div>
-              <div class="mt-1 text-sm text-white/65">${desc || "—"}</div>
+              <div class="mt-1 text-sm text-white/65 line-clamp-3">${desc || "—"}</div>
             </div>
 
-            ${clickHint}
+            ${link ? `<span class="h-4 w-4 text-white/55 mt-1" data-lucide="arrow-up-right"></span>` : ""}
           </div>
-        </${aOpen}>
+        </${tagOpen}>
       `;
     }
 
-    function initReveal() {
-      const el = document.querySelector(".reveal");
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
-      }, { threshold: 0.12 });
-      io.observe(el);
+    function setStats({ total=0, nNew=0, nUpdate=0, nErr=0, nMaint=0 }) {
+      $("statTotal").textContent = String(total);
+      $("statNew").textContent = String(nNew);
+      $("statUpdate").textContent = String(nUpdate);
+      $("statErr").textContent = String(nErr);
+      $("statMaint").textContent = String(nMaint);
+      show($("statsPanel"), true);
+    }
+
+    function setBadges({ nNew=0, nUpdate=0, nErr=0, nMaint=0 }) {
+      $("badgeNew").textContent = String(nNew);
+      $("badgeUpdate").textContent = String(nUpdate);
+      $("badgeError").textContent = String(nErr);
+      $("badgeMaint").textContent = String(nMaint);
+    }
+
+    async function fetchFirstWorkingJson() {
+      let lastErr = null;
+      for (const base of FEATURES_URLS) {
+        try {
+          const url = base + (base.includes("?") ? "&" : "?") + "t=" + Date.now();
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          const lastModified = res.headers.get("last-modified");
+          const data = await res.json();
+          return { base, data, lastModified };
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr || new Error("Fetch failed");
     }
 
     async function loadFeatures() {
-      const loading = $("stateLoading");
-      const errorBox = $("stateError");
-      const emptyBox = $("stateEmpty");
-      const grid = $("featureGrid");
-      const errText = $("errorText");
-      const meta = $("metaInfo");
-
-      show(loading, true);
-      show(errorBox, false);
-      show(emptyBox, false);
-      show(grid, false);
+      show($("stateLoading"), true);
+      show($("stateError"), false);
+      show($("stateEmpty"), false);
       show($("statsPanel"), false);
+      show($("tagBoard"), false);
 
-      grid.innerHTML = "";
-      meta.textContent = "";
+      $("listNew").innerHTML = "";
+      $("listUpdate").innerHTML = "";
+      $("listError").innerHTML = "";
+      $("listMaint").innerHTML = "";
+
+      $("metaInfo").textContent = "Loading…";
+      $("lastUpdated").textContent = "";
+
+      const now = Date.now();
+      let seenMap = pruneSeenMap(getSeenMap(), now);
 
       try {
-        const url = FEATURES_URL + (FEATURES_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        const { base, data, lastModified } = await fetchFirstWorkingJson();
+        const itemsRaw = normalizeItems(data);
 
-        const lastModified = res.headers.get("last-modified");
-        const data = await res.json();
-
-        const items = normalizeItems(data);
-        if (!items.length) {
-          show(loading, false);
-          show(emptyBox, true);
-          setStats({ total: 0, fresh: 0, err: 0 });
+        if (!itemsRaw.length) {
+          show($("stateLoading"), false);
+          show($("stateEmpty"), true);
+          $("metaInfo").textContent = "Empty";
+          setStats({ total: 0, nNew: 0, nUpdate: 0, nErr: 0, nMaint: 0 });
+          setBadges({ nNew: 0, nUpdate: 0, nErr: 0, nMaint: 0 });
+          show($("tagBoard"), true);
           return;
         }
 
-        const seen = getSeenSet();
-
-        const rendered = items.map((item, idx) => {
-          const key = getFeatureKey(item, idx);
-          const title = safeText(item.title ?? item.name ?? "Untitled");
-          const desc = safeText(item.description ?? item.desc ?? item.detail ?? item.text ?? "");
-          const icon = safeText(item.icon ?? item.lucide ?? "sparkles").trim() || "sparkles";
-          const link = safeText(item.link ?? item.url ?? item.href ?? "");
-          const hasExplicitNew = truthy(item.new ?? item.isNew ?? item.is_new);
-
-          const isNew = hasExplicitNew || !seen.has(key);
-          const badgeText = safeText(item.badge ?? item.tag ?? "NEW");
-
-          return { key, title, desc, icon, link: link || null, isNew, badgeText };
+        // decorate items with key + tag
+        const items = itemsRaw.map((it, idx) => {
+          const key = getFeatureKey(it, idx);
+          const tag = getTag(it);
+          return { ...it, __key: key, __tag: tag, __idx: idx };
         });
 
-        grid.innerHTML = rendered.map(renderFeatureCard).join("");
-        lucide.createIcons();
+        // "NEW" logic: item dianggap kandidat NEW jika:
+        // - tag dari json = new, atau
+        // - item belum pernah terlihat (belum ada di seenMap)
+        const newCandidates = [];
+        for (const it of items) {
+          const explicitNew = it.__tag === "new";
+          const neverSeen = seenMap[it.__key] === undefined;
 
-        const newSeen = new Set(seen);
-        rendered.forEach(r => newSeen.add(r.key));
-        saveSeenSet(newSeen);
+          if (explicitNew || neverSeen) {
+            if (seenMap[it.__key] === undefined) seenMap[it.__key] = now; // stamp pertama kali muncul
+            const age = now - Number(seenMap[it.__key]);
+            if (age <= NEW_TTL_MS) newCandidates.push(it);
+          }
+        }
 
-        const total = rendered.length;
-        const newCount = rendered.filter(r => r.isNew).length;
+        // Sort NEW by first seen (recent first) then limit to max 2
+newCandidates.sort((a, b) => (seenMap[b.__key] ?? 0) - (seenMap[a.__key] ?? 0));
+const newShow = newCandidates.slice(0, NEW_LIMIT);
 
-        const infoParts = [];
-        infoParts.push(`${total} features loaded`);
-        if (newCount > 0) infoParts.push(`${newCount} new`);
-        if (lastModified) infoParts.push(`Updated: ${lastModified}`);
-        meta.textContent = infoParts.join(" • ");
+// Kategorikan item lain berdasarkan tag dari JSON
+const updateList = items.filter(it => it.__tag === "update");
+const errorList  = items.filter(it => it.__tag === "error");
+const maintList  = items.filter(it => it.__tag === "maintenance");
 
-        show(loading, false);
-        show(grid, true);
+// Render list NEW: hanya tampil newShow (max 2) dan auto hilang jika >24h (sudah difilter)
+$("listNew").innerHTML = newShow.length
+  ? newShow.map(renderItemCard).join("")
+  : `<div class="text-sm text-white/55">Tidak ada NEW (24 jam terakhir).</div>`;
 
-        // Stats (Total = green dot, Error = red dot)
-        setStats({ total, fresh: newCount, err: 0 });
-      } catch (e) {
-        show(loading, false);
-        show(errorBox, true);
-        errText.textContent = e?.message ? String(e.message) : "Unknown error";
-        setStats({ total: 0, fresh: 0, err: 1 });
-      }
-    }
+// Render list lain
+$("listUpdate").innerHTML = updateList.length
+  ? updateList.map(renderItemCard).join("")
+  : `<div class="text-sm text-white/55">Tidak ada UPDATE.</div>`;
 
-    (function boot() {
-      lucide.createIcons();
-      $("year").textContent = new Date().getFullYear();
+$("listError").innerHTML = errorList.length
+  ? errorList.map(renderItemCard).join("")
+  : `<div class="text-sm text-white/55">Tidak ada ERROR.</div>`;
 
-      const src = $("srcLink");
-      src.href = FEATURES_URL;
-      src.textContent = FEATURES_URL;
+$("listMaint").innerHTML = maintList.length
+  ? maintList.map(renderItemCard).join("")
+  : `<div class="text-sm text-white/55">Tidak ada MAINTENANCE.</div>`;
 
-      const btnMenu = $("btnMenu");
-      const mobileMenu = $("mobileMenu");
-      btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
-      mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+// Simpan seenMap yang sudah dipruning (biar yang >24h otomatis “terhapus” dari memory web)
+saveSeenMap(pruneSeenMap(seenMap, now));
 
-      $("btnRefresh")?.addEventListener("click", loadFeatures);
-      $("btnResetNew")?.addEventListener("click", () => {
-        localStorage.removeItem(STORAGE_KEY);
-        loadFeatures();
-      });
+// Statistik + badge counter
+const total = items.length;
+const nNew = newShow.length;
+const nUpdate = updateList.length;
+const nErr = errorList.length;
+const nMaint = maintList.length;
 
-      initReveal();
-      loadFeatures();
-    })();
-  </script>
-</body>
-</html>
+setStats({ total, nNew, nUpdate, nErr, nMaint });
+setBadges({ nNew, nUpdate, nErr, nMaint });
 
+// Info status (tanpa nampilin URL panjang)
+$("metaInfo").textContent = `Loaded ${total} • NEW ${nNew} • UPDATE ${nUpdate} • ERROR ${nErr} • MAINT ${nMaint}`;
+$("lastUpdated").textContent = lastModified ? `Updated: ${lastModified}` : "";
+
+// Tampilkan panel
+show($("stateLoading"), false);
+show($("statsPanel"), true);
+show($("tagBoard"), true);
+
+// Replace icons setelah HTML di-inject
+lucide.createIcons(); // [web:18]
+
+// Button: open json (tapi tidak menampilkan URL)
+$("btnOpenJson").onclick = () => window.open(base, "_blank", "noopener,noreferrer");
+} catch (e) {
+show($("stateLoading"), false);
+show($("stateError"), true);
+$("errorText").textContent = e?.message ? String(e.message) : "Unknown error";
+
+$("metaInfo").textContent = "Fetch error";
+$("lastUpdated").textContent = "";
+
+setStats({ total: 0, nNew: 0, nUpdate: 0, nErr: 1, nMaint: 0 });
+setBadges({ nNew: 0, nUpdate: 0, nErr: 1, nMaint: 0 });
+
+show($("tagBoard"), true);
+lucide.createIcons(); // [web:18]
+}
+}
+
+// ===== Boot =====
+(function boot() {
+lucide.createIcons(); // [web:18]
+$("year").textContent = new Date().getFullYear();
+
+const btnMenu = $("btnMenu");
+const mobileMenu = $("mobileMenu");
+btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+
+$("btnRefresh")?.addEventListener("click", loadFeatures);
+$("btnResetNew")?.addEventListener("click", () => {
+localStorage.removeItem(SEEN_TS_KEY);
+loadFeatures();
+});
+
+const el = document.querySelector(".reveal");
+const io = new IntersectionObserver((entries) => {
+entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
+}, { threshold: 0.12 });
+io.observe(el);
+
+loadFeatures();
+})();
