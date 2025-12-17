@@ -1,4 +1,4 @@
-<!-- FILE: snipsets.html -->
+<!-- FILE: snipsets.html (UPDATED: syntax highlight + 16:9 modal code, NO love) -->
 <!doctype html>
 <html lang="id">
 <head>
@@ -12,11 +12,13 @@
 
   <!-- Tailwind Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 
+  <!-- highlight.js (syntax highlighting) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -25,11 +27,7 @@
           fontFamily: {
             sans: ["Inter", "ui-sans-serif", "system-ui"],
             mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
-          },
-          keyframes: {
-            shimmer: { "0%": { transform: "translateX(-120%)" }, "100%": { transform: "translateX(120%)" } },
-          },
-          animation: { shimmer: "shimmer 2.8s ease-in-out infinite" }
+          }
         }
       }
     }
@@ -75,7 +73,6 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
-
     .g-border{
       position: relative;
       border-radius: 16px;
@@ -94,13 +91,6 @@
       border: 1px solid rgba(255,255,255,.10);
     }
 
-    .aspect-16x9{ aspect-ratio: 16 / 9; }
-@supports not (aspect-ratio: 16 / 9){
-  .aspect-16x9{ position: relative; }
-  .aspect-16x9::before{ content:""; display:block; padding-top:56.25%; } /* 16:9 */
-  .aspect-16x9 > .aspect-inner{ position:absolute; inset:0; }
-}
-
     .btn-shine{ position:relative; overflow:hidden; }
     .btn-shine::after{
       content:"";
@@ -108,9 +98,10 @@
       width:50%; height:160%;
       transform: rotate(18deg);
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
-      animation: shimmer 2.8s ease-in-out infinite;
+      animation: shine 2.6s ease-in-out infinite;
       opacity: .55;
     }
+    @keyframes shine { 0%{ transform:translateX(-120%) rotate(18deg);} 100%{ transform:translateX(120%) rotate(18deg);} }
 
     .reveal{ opacity:0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
@@ -121,10 +112,8 @@
     .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
     .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
 
-    /* code preview fade */
-    .code-fade{
-      position: relative;
-    }
+    /* Code preview fade (card) */
+    .code-fade{ position: relative; }
     .code-fade::after{
       content:"";
       position:absolute;
@@ -133,6 +122,17 @@
       background: linear-gradient(180deg, rgba(7,10,18,0), rgba(7,10,18,.92));
       pointer-events:none;
     }
+
+    /* 16:9 wrapper (modal) */
+    .aspect-16x9{ aspect-ratio: 16 / 9; }
+    @supports not (aspect-ratio: 16 / 9){
+      .aspect-16x9{ position: relative; }
+      .aspect-16x9::before{ content:""; display:block; padding-top:56.25%; }
+      .aspect-16x9 > .aspect-inner{ position:absolute; inset:0; }
+    }
+
+    /* hljs tweak (keep bg consistent) */
+    pre code.hljs{ background: transparent !important; }
   </style>
 </head>
 
@@ -186,13 +186,12 @@
       <section class="reveal">
         <div class="g-border w-full max-w-full">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8 w-full max-w-full">
-
             <div class="flex items-start justify-between gap-4 flex-wrap min-w-0">
               <div class="min-w-0">
                 <div class="text-xs text-white/55">Code Snipsets</div>
                 <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Library kode fitur</h1>
                 <p class="mt-3 text-white/70 max-w-2xl">
-                  Semua code fitur dikumpulkan di sini. Klik card untuk lihat kode lengkap dan copy.
+                  Klik card untuk lihat kode lengkap + tombol copy. Preview akan “setengah” supaya deskripsi tetap kelihatan.
                 </p>
               </div>
 
@@ -235,17 +234,17 @@
 
               <div class="lg:col-span-5 min-w-0">
                 <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex flex-wrap gap-2 items-center">
-                  <button data-filter="all" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">All</button>
-                  <button data-filter="case" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">Case</button>
-                  <button data-filter="cjs" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">Plugin CJS</button>
-                  <button data-filter="esm" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition">Plugin ESM</button>
+                  <button data-filter="all" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white text-black font-semibold">All</button>
+                  <button data-filter="case" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/80">Case</button>
+                  <button data-filter="cjs" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/80">Plugin CJS</button>
+                  <button data-filter="esm" class="chip px-3 py-1.5 rounded-full text-sm border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/80">Plugin ESM</button>
                   <span class="ml-auto text-xs text-white/50" id="resultMeta">0</span>
                 </div>
               </div>
             </div>
 
             <!-- STATS -->
-            <div class="mt-5 grid grid-cols-2 lg:grid-cols-6 gap-3" id="statsPanel">
+            <div class="mt-5 grid grid-cols-2 lg:grid-cols-6 gap-3">
               <div class="glass rounded-2xl border border-white/10 p-4">
                 <div class="flex items-center justify-between text-xs text-white/60">
                   <span class="inline-flex items-center gap-2"><span class="h-4 w-4" data-lucide="layers"></span>Total</span>
@@ -269,7 +268,7 @@
                   <span class="h-2.5 w-2.5 rounded-full bg-violet-300"></span>
                 </div>
                 <div class="mt-3 text-3xl font-extrabold tracking-tight" id="statUpd">0</div>
-                <div class="mt-2 text-[11px] text-white/45">Detected by hash</div>
+                <div class="mt-2 text-[11px] text-white/45">Hash detect</div>
               </div>
 
               <div class="glass rounded-2xl border border-white/10 p-4">
@@ -386,7 +385,7 @@
           <!-- Tabs -->
           <div class="mt-4 flex flex-wrap gap-2" id="tabs"></div>
 
-          <!-- Code area -->
+          <!-- Code area (16:9) -->
           <div class="mt-4 glass rounded-2xl border border-white/10 overflow-hidden w-full max-w-full">
             <div class="flex items-center justify-between gap-2 px-4 py-3 border-b border-white/10 bg-white/5">
               <div class="flex items-center gap-2 text-sm text-white/80 min-w-0">
@@ -400,13 +399,12 @@
               </button>
             </div>
 
-<div class="aspect-16x9 bg-[#070A12]">
-  <div class="aspect-inner">
-    <pre class="mono text-[12px] sm:text-[13px] leading-relaxed p-4 overflow-auto h-full scrollbar">
-<code id="mCode" class="language-javascript"></code></pre>
-  </div>
-</div>
-
+            <div class="aspect-16x9 bg-[#070A12]">
+              <div class="aspect-inner">
+                <pre class="mono text-[12px] sm:text-[13px] leading-relaxed p-0 m-0 overflow-auto h-full scrollbar">
+<code id="mCode" class="language-javascript hljs block p-4"></code></pre>
+              </div>
+            </div>
           </div>
 
           <div class="mt-4 glass rounded-2xl border border-white/10 p-4">
@@ -435,14 +433,13 @@
     const NEW_TTL_MS = 24 * 60 * 60 * 1000;
     const UPDATED_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-    const SEEN_KEY = "astrionhub_snipsets_seen_ts_v1";
-    const HASH_KEY = "astrionhub_snipsets_hash_v1";
-    const UPDATED_KEY = "astrionhub_snipsets_updated_ts_v1";
+    const SEEN_KEY = "astrionhub_snipsets_seen_ts_v2";
+    const HASH_KEY = "astrionhub_snipsets_hash_v2";
+    const UPDATED_KEY = "astrionhub_snipsets_updated_ts_v2";
 
     // ===== Helpers =====
     const $ = (id) => document.getElementById(id);
     const safeText = (v, fallback="") => (v === null || v === undefined) ? fallback : String(v);
-    const nowMs = () => Date.now();
 
     function escapeHTML(str) {
       const s = safeText(str, "");
@@ -464,7 +461,6 @@
       if (v === null || v === undefined) return "";
       if (Array.isArray(v)) return v.map(x => safeText(x)).join("\n");
       if (typeof v === "object") {
-        // if it looks like { code: "..."} allow it
         if (typeof v.code === "string") return v.code;
         try { return JSON.stringify(v, null, 2); } catch { return String(v); }
       }
@@ -476,7 +472,7 @@
       return safeText(k, idx).trim();
     }
 
-        function pickTitle(item) {
+    function pickTitle(item) {
       return safeText(item.title ?? item.name ?? item.feature ?? item.id ?? "Untitled");
     }
 
@@ -485,7 +481,7 @@
     }
 
     function pickVersion(item) {
-      return safeText(item.version ?? item.ver ?? item.v ?? item.caseVersion ?? item.pluginVersion ?? "");
+      return safeText(item.version ?? item.ver ?? item.v ?? "");
     }
 
     function pickIcon(item) {
@@ -499,12 +495,7 @@
     }
 
     function extractVariants(item) {
-      // Flexible schema:
-      // - item.variants: { case:"...", cjs:"...", esm:"..." } or any keys
-      // - item.code: { case/cjs/esm } or string
-      // - item.case / item.cjs / item.esm / item.plugin_cjs / item.plugin_esm
       const out = [];
-
       const add = (id, label, code, hintType) => {
         const c = toCodeString(code);
         if (!c.trim()) return;
@@ -521,12 +512,9 @@
 
       const code = item.code;
       if (code && typeof code === "object" && !Array.isArray(code)) {
-        // Prefer known keys
         add("case", "Case", code.case ?? code.example ?? code.sample ?? "", "case");
-        add("cjs", "Plugin CJS", code.cjs ?? code["plugin cjs"] ?? code.plugin_cjs ?? "", "cjs");
-        add("esm", "Plugin ESM", code.esm ?? code["plugin esm"] ?? code.plugin_esm ?? "", "esm");
-
-        // Add any remaining keys
+        add("cjs", "Plugin CJS", code.cjs ?? code.plugin_cjs ?? code["plugin cjs"] ?? "", "cjs");
+        add("esm", "Plugin ESM", code.esm ?? code.plugin_esm ?? code["plugin esm"] ?? "", "esm");
         for (const [k, v] of Object.entries(code)) {
           const kk = String(k).toLowerCase();
           if (["case","example","sample","cjs","esm","plugin_cjs","plugin_esm","plugin cjs","plugin esm"].includes(kk)) continue;
@@ -536,12 +524,10 @@
         add("code", "Code", code, getTypeGuess(item));
       }
 
-      // Direct fields fallbacks
       add("case", "Case", item.case ?? item.example ?? item.sample ?? "", "case");
       add("cjs", "Plugin CJS", item.cjs ?? item.plugin_cjs ?? item.pluginCjs ?? item["plugin cjs"] ?? "", "cjs");
       add("esm", "Plugin ESM", item.esm ?? item.plugin_esm ?? item.pluginEsm ?? item["plugin esm"] ?? "", "esm");
 
-      // De-dupe by id
       const seen = new Set();
       return out.filter(v => (seen.has(v.id) ? false : (seen.add(v.id), true)));
     }
@@ -576,7 +562,6 @@
       try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
     }
 
-    // Simple stable hash (FNV-1a)
     function hashStr(str) {
       const s = String(str);
       let h = 2166136261;
@@ -600,9 +585,7 @@
 
     function show(el, yes) { el.classList.toggle("hidden", !yes); }
 
-    // ===== UI badges =====
     function badgeNew(ageMs) {
-      // <24h => NEW, else show "Xd"
       const age = msToAge(ageMs);
       const isNew = ageMs <= NEW_TTL_MS;
       const label = isNew ? "NEW" : age;
@@ -674,7 +657,7 @@
         it.variants?.length ? `${it.variants.length} variant` : ""
       ].filter(Boolean).join(" • ");
 
-      const preview = escapeHTML(linesPreview(it.previewCode, 10));
+      const preview = escapeHTML(linesPreview(it.previewCode, 14));
 
       return `
         <button data-open="${escapeHTML(it.key)}"
@@ -685,9 +668,7 @@
                 <span class="h-5 w-5 text-white/85" data-lucide="${icon}"></span>
               </div>
               <div class="min-w-0">
-                <div class="flex items-center gap-2 min-w-0">
-                  <div class="font-semibold text-white/90 truncate min-w-0">${title}</div>
-                </div>
+                <div class="font-semibold text-white/90 truncate min-w-0">${title}</div>
                 <div class="mt-1 text-xs text-white/55 break-all">${meta || ""}</div>
               </div>
             </div>
@@ -700,7 +681,8 @@
 
           <div class="mt-4 glass rounded-2xl border border-white/10 bg-[#070A12] overflow-hidden w-full max-w-full">
             <div class="code-fade">
-              <pre class="mono text-[12px] leading-relaxed p-4 overflow-hidden max-h-[160px] whitespace-pre break-all text-white/80">${preview}</pre>
+              <pre class="p-0 m-0 overflow-hidden max-h-[170px]">
+<code class="language-javascript text-[12px] leading-relaxed block p-4">${preview}</code></pre>
             </div>
           </div>
 
@@ -751,7 +733,6 @@
       ].filter(Boolean).join(" • ");
       mMeta.textContent = meta;
 
-      // badges
       const bb = [];
       if (it.newAgeMs != null) bb.push(badgeNew(it.newAgeMs));
       if (it.updAgeMs != null) bb.push(badgeUpd(it.updAgeMs));
@@ -773,7 +754,7 @@
 
       show(modal, true);
       document.body.classList.add("overflow-hidden");
-      lucide.createIcons(); // ensure icons rendered [web:18]
+      lucide.createIcons();
     }
 
     function closeModal() {
@@ -787,8 +768,13 @@
       if (!modalItem) return;
       const v = modalItem.variants.find(x => x.id === variantId) || modalItem.variants[0];
       modalVariant = v;
+
       mTabLabel.textContent = v?.label || "Code";
       mCode.textContent = v?.code || "";
+
+      // highlight modal code
+      try { hljs.highlightElement(mCode); } catch {}
+
       // refresh tab active styles
       [...tabs.children].forEach((b) => {
         const active = (b.textContent === (v?.label || "Code"));
@@ -847,7 +833,6 @@
 
       const view = state.items.filter(it => {
         if (f !== "all") {
-          // show items that contain that variant
           const has = it.variants.some(v => v.type === f || v.id === f);
           if (!has) return false;
         }
@@ -856,11 +841,8 @@
       });
 
       state.view = view;
-
-      // meta
       $("resultMeta").textContent = `${view.length}/${state.items.length}`;
 
-      // render
       const grid = $("grid");
       grid.innerHTML = view.map(renderCard).join("");
       show(grid, true);
@@ -870,7 +852,11 @@
         btn.addEventListener("click", () => openModal(btn.getAttribute("data-open")));
       });
 
-      lucide.createIcons(); // icons after DOM injection [web:18]
+      // icons + highlight after DOM injection
+      lucide.createIcons();
+      try {
+        grid.querySelectorAll("pre code").forEach(el => hljs.highlightElement(el));
+      } catch {}
     }
 
     // ===== Stats =====
@@ -899,8 +885,7 @@
       show($("grid"), false);
       $("grid").innerHTML = "";
 
-      const now = nowMs();
-
+      const now = Date.now();
       let seenMap = lsGet(SEEN_KEY, {});
       let hashMap = lsGet(HASH_KEY, {});
       let updMap = lsGet(UPDATED_KEY, {});
@@ -917,7 +902,6 @@
         const { base, data, lastModified } = await fetchFirstWorkingJson();
         state.baseUrl = base;
         state.lastModified = lastModified || "";
-
         $("btnOpenJson").onclick = () => window.open(base, "_blank", "noopener,noreferrer");
 
         const raw = normalizeItems(data);
@@ -930,7 +914,6 @@
           return;
         }
 
-        // Build items
         const items = raw.map((item, idx) => {
           const key = getKey(item, idx);
 
@@ -941,7 +924,7 @@
 
           const oldHash = hashMap[key];
           if (oldHash && oldHash !== h) {
-            updMap[key] = now; // mark as updated
+            updMap[key] = now;
           }
           hashMap[key] = h;
 
@@ -956,7 +939,6 @@
           const updTs = updMap[key] !== undefined ? Number(updMap[key]) : null;
           const updAgeMs = (updTs != null && Number.isFinite(updTs)) ? (now - updTs) : null;
 
-          // Type badge based on filter relevance (if item says type)
           const tGuess = getTypeGuess(item);
           const typeBadge = (tGuess === "case" || tGuess === "cjs" || tGuess === "esm") ? badgeType(tGuess) : "";
 
@@ -985,7 +967,7 @@
           return out;
         });
 
-        // Sort: NEW first (recent), then UPDATED (recent), then alpha
+        // Sort: NEW first, then UPDATED, then alpha
         items.sort((a, b) => {
           const aNew = (a.newAgeMs ?? 1e18);
           const bNew = (b.newAgeMs ?? 1e18);
@@ -1002,7 +984,7 @@
           return a.title.localeCompare(b.title);
         });
 
-        // Persist
+        // persist
         lsSet(SEEN_KEY, seenMap);
         lsSet(HASH_KEY, hashMap);
         lsSet(UPDATED_KEY, updMap);
@@ -1026,7 +1008,6 @@
 
     // ===== Boot =====
     (function boot() {
-      // icons for static DOM [web:18]
       lucide.createIcons();
 
       $("year").textContent = new Date().getFullYear();
@@ -1053,15 +1034,18 @@
       document.querySelectorAll(".chip").forEach(btn => {
         btn.addEventListener("click", () => {
           state.filter = btn.dataset.filter || "all";
+
           document.querySelectorAll(".chip").forEach(b => {
-            b.classList.toggle("bg-white", b === btn);
-            b.classList.toggle("text-black", b === btn);
-            b.classList.toggle("font-semibold", b === btn);
-            if (b !== btn) {
+            const active = (b === btn);
+            if (active) {
+              b.classList.add("bg-white","text-black","font-semibold");
+              b.classList.remove("bg-white/5","text-white/80");
+            } else {
               b.classList.remove("bg-white","text-black","font-semibold");
               b.classList.add("bg-white/5","text-white/80");
             }
           });
+
           applyView();
         });
       });
@@ -1085,10 +1069,6 @@
       } else {
         document.querySelectorAll(".reveal").forEach(x => x.classList.add("show"));
       }
-
-      // default selected filter
-      const firstChip = document.querySelector('.chip[data-filter="all"]');
-      if (firstChip) firstChip.click();
 
       loadSnipsets();
     })();
