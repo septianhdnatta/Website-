@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ASTRIONHUB</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{ --bg0:#070A12; --bg1:#0A1020; }
+    html{ scroll-behavior:smooth; }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
+        radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      background-color:#070A12;
+    }
+
+    .bg-grid{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: .22;
+    }
+    .bg-vignette{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.58) 100%);
+    }
+    .app{ position: relative; z-index: 1; }
+
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glass-strong{
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .g-border{
+      position: relative;
+      border-radius: 16px;
+      padding: 1px;
+      overflow: hidden;
+      background: linear-gradient(120deg,
+        rgba(124,92,255,.55),
+        rgba(25,211,255,.35),
+        rgba(46,229,157,.25),
+        rgba(255,255,255,.10)
+      );
+    }
+    .g-border > .inner{
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(10,16,32,.85), rgba(7,10,18,.72));
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .reveal{ opacity:0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.show{ opacity:1; transform: translateY(0); }
+
+    .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
+    .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
+    .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
+
+    .mono{ font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+
+<body class="text-white font-sans selection:bg-white/15 selection:text-white overflow-x-hidden min-h-screen bg-[#070A12]">
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+
+  <div class="app">
+    <!-- NAV -->
+    <header class="sticky top-0 z-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+        <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between max-w-full">
+          <a href="index.html" class="flex items-center gap-3 min-w-0">
+            <div class="g-border h-10 w-10 rounded-xl overflow-hidden grid place-items-center flex-none">
+              <div class="inner h-full w-full grid place-items-center">
+                <div class="h-6 w-6 text-white/90" data-lucide="sparkles"></div>
+              </div>
+            </div>
+            <div class="leading-tight min-w-0">
+              <div class="text-sm text-white/85 font-semibold truncate">ASTRIONHUB</div>
+              <div class="text-xs text-white/50 truncate">Home</div>
+            </div>
+          </a>
+
+          <div class="hidden md:flex items-center gap-6 text-sm text-white/75">
+            <a class="hover:text-white transition" href="features.html">Features</a>
+            <a class="hover:text-white transition" href="snipsets.html">Snipsets</a>
+            <a class="hover:text-white transition" href="demo.html">Demo</a>
+            <a class="hover:text-white transition" href="pricing.html">Pricing</a>
+            <a class="hover:text-white transition" href="#ai-chat">AI Chat</a>
+            <a class="hover:text-white transition" href="#faq">FAQ</a>
+            <a class="hover:text-white transition" href="contact.html">Contact</a>
+          </div>
+
+          <button id="btnMenu" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition" aria-label="Open menu">
+            <span class="h-5 w-5" data-lucide="menu"></span>
+          </button>
+        </nav>
+
+        <div id="mobileMenu" class="hidden md:hidden mt-3 glass rounded-2xl px-4 py-3 max-w-full">
+          <div class="grid gap-1 text-sm text-white/80">
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="features.html">Features</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="snipsets.html">Snipsets</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="demo.html">Demo</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="pricing.html">Pricing</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#ai-chat">AI Chat</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="#faq">FAQ</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="contact.html">Contact</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14">
+      <!-- HERO -->
+      <section class="reveal">
+        <div class="g-border w-full max-w-full">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8 w-full max-w-full">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              <div class="min-w-0">
+                <div class="text-xs text-white/55">ASTRIONHUB</div>
+                <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
+                  Website hub fitur + code snipsets
+                </h1>
+                <p class="mt-3 text-white/70 max-w-2xl">
+                  Landing, pricing, snipsets, dan sekarang ada AI Chat “Yuuka” untuk bantu tanya jawab.
+                </p>
+
+                <div class="mt-5 flex flex-col sm:flex-row gap-2">
+                  <a href="snipsets.html"
+                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
+                    <span class="h-4 w-4" data-lucide="code-2"></span>
+                    Buka Snipsets
+                  </a>
+                  <a href="#ai-chat"
+                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                    <span class="h-4 w-4" data-lucide="bot"></span>
+                    Chat Yuuka
+                  </a>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 w-full lg:w-[420px]">
+                <div class="glass rounded-2xl border border-white/10 p-4">
+                  <div class="text-xs text-white/55">Pages</div>
+                  <div class="mt-2 text-2xl font-extrabold">5+</div>
+                  <div class="mt-2 text-sm text-white/65">Home, Features, Snipsets, Pricing, Contact.</div>
+                </div>
+                <div class="glass rounded-2xl border border-white/10 p-4">
+                  <div class="text-xs text-white/55">Update</div>
+                  <div class="mt-2 text-2xl font-extrabold">Auto</div>
+                  <div class="mt-2 text-sm text-white/65">Snipsets baca JSON dari GitHub.</div>
+                </div>
+                <div class="glass rounded-2xl border border-white/10 p-4">
+                  <div class="text-xs text-white/55">AI</div>
+                  <div class="mt-2 text-2xl font-extrabold">Yuuka</div>
+                  <div class="mt-2 text-sm text-white/65">Chat helper untuk pertanyaan cepat.</div>
+                </div>
+                <div class="glass rounded-2xl border border-white/10 p-4">
+                  <div class="text-xs text-white/55">UI</div>
+                  <div class="mt-2 text-2xl font-extrabold">Glass</div>
+                  <div class="mt-2 text-sm text-white/65">Neon glass style + responsive.</div>
+                </div>
+              </div>
+            </div>
+          </div><!-- inner -->
+        </div><!-- g-border -->
+      </section>
+
+      <!-- AI CHAT (ABOVE FAQ) -->
+      <section id="ai-chat" class="reveal mt-10">
+        <div class="g-border w-full max-w-full">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8 w-full max-w-full">
+            <div class="flex items-start justify-between gap-4 flex-wrap min-w-0">
+              <div class="min-w-0">
+                <div class="text-xs text-white/55">AI Chat</div>
+                <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">Chat dengan Yuuka</h2>
+                <p class="mt-2 text-white/70 max-w-2xl">
+                  Tanyakan apa saja tentang fitur, error, atau request code snippet.
+                </p>
+              </div>
+
+              <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
+                <span class="h-4 w-4 text-white/70" data-lucide="bot"></span>
+                <span class="text-sm text-white/75">Assistant: Yuuka</span>
+              </div>
+            </div>
+
+            <div class="mt-6 grid lg:grid-cols-12 gap-4 min-w-0">
+              <!-- chat panel -->
+              <div class="lg:col-span-7 min-w-0">
+                <div class="glass rounded-2xl border border-white/10 overflow-hidden w-full max-w-full">
+                  <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 bg-white/5">
+                    <div class="flex items-center gap-2 text-sm text-white/80 min-w-0">
+                      <span class="h-4 w-4 flex-none" data-lucide="message-circle"></span>
+                      <span class="font-semibold truncate">Yuuka Chat</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span id="aiStatusDot" class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+                      <span id="aiStatusText" class="text-xs text-white/55">Ready</span>
+                    </div>
+                  </div>
+
+                  <div id="chatList" class="p-4 h-[360px] sm:h-[420px] overflow-auto scrollbar space-y-3 bg-[#070A12]"></div>
+
+                  <div class="p-3 border-t border-white/10 bg-white/5">
+                    <div class="flex gap-2 min-w-0">
+                      <input id="chatInput"
+                        class="w-full min-w-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/90 placeholder:text-white/35 outline-none focus:border-white/25"
+                        placeholder="Tulis pesan... (Enter untuk kirim)" />
+                      <button id="btnSend"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold flex-none">
+                        <span class="h-4 w-4" data-lucide="send"></span>
+                        Send
+                      </button>
+                    </div>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <button id="btnClearChat"
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-sm text-white/75">
+                        <span class="h-4 w-4" data-lucide="trash-2"></span>
+                        Clear chat
+                      </button>
+
+                      <button id="btnInsertExample"
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-sm text-white/75">
+                        <span class="h-4 w-4" data-lucide="sparkles"></span>
+                        Contoh pertanyaan
+                      </button>
+
+                      <span id="chatHint" class="ml-auto text-xs text-white/45 self-center">
+                        Output diambil dari <span class="mono">data.message</span>.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- side tips -->
+              <div class="lg:col-span-5 min-w-0">
+                <div class="glass rounded-2xl border border-white/10 p-5 w-full max-w-full">
+                  <div class="flex items-start gap-3 min-w-0">
+                    <span class="h-5 w-5 text-white/70 flex-none" data-lucide="info"></span>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-white/85">Tips</div>
+                      <ul class="mt-2 text-sm text-white/70 list-disc pl-5 space-y-1">
+                        <li>Contoh: “Buatkan case menu BRAT versi 1 dan 2.”</li>
+                        <li>Contoh: “Fix card kepotong di mobile Tailwind.”</li>
+                        <li>Contoh: “Bikin plugin ESM dari fitur X.”</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 glass rounded-2xl border border-amber-300/15 bg-amber-500/10 p-5 w-full max-w-full">
+                  <div class="flex items-start gap-3 min-w-0">
+                    <span class="h-5 w-5 text-amber-200 flex-none" data-lucide="triangle-alert"></span>
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-amber-100">Catatan API key</div>
+                      <div class="mt-1 text-sm text-amber-100/80">
+                        API key di front-end bisa terlihat publik. Kalau mau aman, gunakan proxy backend (Vercel).
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- inner -->
+        </div><!-- g-border -->
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="reveal mt-10">
+        <div class="g-border w-full max-w-full">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8 w-full max-w-full">
+            <div class="text-xs text-white/55">FAQ</div>
+            <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">Pertanyaan umum</h2>
+
+            <div class="mt-6 grid gap-3">
+              <details class="glass rounded-2xl border border-white/10 p-5">
+                <summary class="cursor-pointer font-semibold text-white/90">Snipsets ngambil data dari mana?</summary>
+                <div class="mt-2 text-white/70 text-sm">Dari file JSON di GitHub (raw URL) yang kamu set.</div>
+              </details>
+
+              <details class="glass rounded-2xl border border-white/10 p-5">
+                <summary class="cursor-pointer font-semibold text-white/90">Kenapa AI chat kadang error?</summary>
+                <div class="mt-2 text-white/70 text-sm">Biasanya karena koneksi, rate limit, atau CORS dari API.</div>
+              </details>
+
+              <details class="glass rounded-2xl border border-white/10 p-5">
+                <summary class="cursor-pointer font-semibold text-white/90">Bisa ganti nama AI jadi Yuuka?</summary>
+                <div class="mt-2 text-white/70 text-sm">Bisa, nama UI di halaman ini sudah “Yuuka”.</div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB</div>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <a href="features.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Features</a>
+          <a href="snipsets.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Snipsets</a>
+          <a href="pricing.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
+          <a href="contact.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Icons (Lucide)
+    lucide.createIcons();
+
+    // Menu
+    const btnMenu = document.getElementById("btnMenu");
+    const mobileMenu = document.getElementById("mobileMenu");
+    btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+    mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Reveal animation
+    document.querySelectorAll(".reveal").forEach((el) => {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
+      }, { threshold: 0.12 });
+      io.observe(el);
+    });
+
+    // ===== Yuuka Chat =====
+    const CHAT_KEY = "astrionhub_yuuka_chat_v1";
+
+    // IMPORTANT:
+    // - Direct client call might fail if API doesn't enable CORS.
+    // - If you deploy a proxy route, set USE_PROXY = true and use /api/yuuka?q=...
+    const USE_PROXY = false; // set true if you add Vercel API route below
+    const NEOXR_APIKEY = "sJSCtQ";
+    const NEOXR_ENDPOINT = "https://api.neoxr.eu/api/gpt-pro";
+
+    const chatList = document.getElementById("chatList");
+    const chatInput = document.getElementById("chatInput");
+    const btnSend = document.getElementById("btnSend");
+    const btnClearChat = document.getElementById("btnClearChat");
+    const btnInsertExample = document.getElementById("btnInsertExample");
+
+    const aiStatusDot = document.getElementById("aiStatusDot");
+    const aiStatusText = document.getElementById("aiStatusText");
+
+    let sending = false;
+
+    function setStatus(kind, text){
+      aiStatusText.textContent = text;
+      aiStatusDot.className = "h-2.5 w-2.5 rounded-full " + (
+        kind === "ok" ? "bg-emerald-400" :
+        kind === "wait" ? "bg-amber-300" :
+        "bg-rose-400"
+      );
+    }
+
+    function loadChat(){
+      try {
+        const raw = localStorage.getItem(CHAT_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      } catch { return []; }
+    }
+
+    function saveChat(arr){
+      try { localStorage.setItem(CHAT_KEY, JSON.stringify(arr)); } catch {}
+    }
+
+    function scrollBottom(){
+      chatList.scrollTop = chatList.scrollHeight;
+    }
+
+    function bubble(role, text){
+      const isUser = role === "user";
+      const wrap = document.createElement("div");
+      wrap.className = "flex " + (isUser ? "justify-end" : "justify-start");
+
+      const b = document.createElement("div");
+      b.className =
+        "max-w-[92%] sm:max-w-[80%] rounded-2xl px-4 py-3 border text-sm leading-relaxed break-words " +
+        (isUser
+          ? "bg-white text-black border-white/20"
+          : "bg-white/5 text-white/85 border-white/10");
+
+      const name = document.createElement("div");
+      name.className = "text-[11px] opacity-70 mb-1";
+      name.textContent = isUser ? "You" : "Yuuka";
+
+      const msg = document.createElement("div");
+      msg.textContent = text;
+
+      b.appendChild(name);
+      b.appendChild(msg);
+      wrap.appendChild(b);
+      return wrap;
+    }
+
+    function renderChat(arr){
+      chatList.innerHTML = "";
+      if (!arr.length) {
+        chatList.appendChild(bubble("assistant", "Halo! Aku Yuuka. Tulis pertanyaan kamu ya."));
+      } else {
+        arr.forEach(x => chatList.appendChild(bubble(x.role, x.text)));
+      }
+      scrollBottom();
+    }
+
+    async function callYuuka(q){
+      if (USE_PROXY) {
+        const res = await fetch(`/api/yuuka?q=${encodeURIComponent(q)}`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
+        const json = await res.json();
+        return json?.data?.message || json?.message || "Tidak ada balasan.";
+      } else {
+        const url = new URL(NEOXR_ENDPOINT);
+        url.searchParams.set("q", q);
+        url.searchParams.set("apikey", NEOXR_APIKEY);
+
+        const res = await fetch(url.toString(), { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        return json?.data?.message || json?.message || "Tidak ada balasan.";
+      }
+    }
+
+    async function send(){
+      const q = (chatInput.value || "").trim();
+      if (!q || sending) return;
+
+      sending = true;
+      setStatus("wait", "Thinking...");
+      btnSend.disabled = true;
+      btnSend.classList.add("opacity-70");
+
+      const arr = loadChat();
+      arr.push({ role: "user", text: q, ts: Date.now() });
+      saveChat(arr);
+      renderChat(arr);
+      chatInput.value = "";
+
+      try {
+        const reply = await callYuuka(q);
+        arr.push({ role: "assistant", text: reply, ts: Date.now() });
+        saveChat(arr);
+        renderChat(arr);
+        setStatus("ok", "Ready");
+      } catch (e) {
+        arr.push({
+          role: "assistant",
+          text: `Gagal memanggil API. Kemungkinan CORS / rate limit.\n\nDetail: ${String(e?.message || e)}\n\nJika CORS, aktifkan proxy (USE_PROXY = true).`,
+          ts: Date.now()
+        });
+        saveChat(arr);
+        renderChat(arr);
+        setStatus("err", "Error");
+      } finally {
+        sending = false;
+        btnSend.disabled = false;
+        btnSend.classList.remove("opacity-70");
+      }
+    }
+
+    // events
+    btnSend.addEventListener("click", send);
+
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        send();
+      }
+    });
+
+    btnClearChat.addEventListener("click", () => {
+      try { localStorage.removeItem(CHAT_KEY); } catch {}
+      renderChat([]);
+      setStatus("ok", "Ready");
+    });
+
+    btnInsertExample.addEventListener("click", () => {
+      const sample =
+        "Bikinin case .brat dengan 2 button (v1 sticker, v2 animated) dan kasih error handling.\n" +
+        "Terus jelasin cara taruh di handler command.";
+      chatInput.value = sample;
+      chatInput.focus();
+    });
+
+    // first render
+    renderChat(loadChat());
+    setStatus("ok", "Ready");
+    lucide.createIcons();
+  </script>
+</body>
+</html>
