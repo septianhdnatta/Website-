@@ -1,1 +1,138 @@
+{
+  "payments": {
+    "whatsappNumber": "6281234567890",
+    "qrisImage": "https://example.com/qris.png",
+    "qrisLink": "https://example.com/qris"
+  },
+  "pterodactyl": [
+    {
+      "id": "ptero-1gb",
+      "title": "Server 1 GB",
+      "description": "CPU shared, cocok bot ringan.",
+      "price": 5000,
+      "discount": 0,
+      "tags": ["new"],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-2gb",
+      "title": "Server 2 GB",
+      "description": "Stabil untuk bot menengah.",
+      "price": 9000,
+      "discount": 10,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-3gb",
+      "title": "Server 3 GB",
+      "description": "",
+      "price": 12000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-4gb",
+      "title": "Server 4 GB",
+      "description": "",
+      "price": 15000,
+      "discount": 15,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-5gb",
+      "title": "Server 5 GB",
+      "description": "",
+      "price": 18000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-6gb",
+      "title": "Server 6 GB",
+      "description": "",
+      "price": 21000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-7gb",
+      "title": "Server 7 GB",
+      "description": "",
+      "price": 24000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-8gb",
+      "title": "Server 8 GB",
+      "description": "",
+      "price": 27000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-9gb",
+      "title": "Server 9 GB",
+      "description": "",
+      "price": 30000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-10gb",
+      "title": "Server 10 GB",
+      "description": "",
+      "price": 33000,
+      "discount": 0,
+      "tags": [],
+      "soldOut": false
+    },
+    {
+      "id": "ptero-unlimited",
+      "title": "Server Unlimited",
+      "description": "Best value. Prioritas resource.",
+      "price": 50000,
+      "discount": 20,
+      "tags": ["hot", "popular"],
+      "soldOut": false
+    }
+  ],
+  "sourceCode": [
+    {
+      "id": "sc-bot-wa",
+      "title": "Source WhatsApp Bot",
+      "description": "Base fitur: menu, downloader, dll.",
+      "price": 75000,
+      "discount": 0,
+      "tags": ["hot"],
+      "soldOut": false
+    },
+    {
+      "id": "sc-web-landing",
+      "title": "Source Landing Page",
+      "description": "UI glass + pages.",
+      "price": 45000,
+      "discount": 25,
+      "tags": ["new"],
+      "soldOut": false
+    },
+    {
+      "id": "sc-private",
+      "title": "Source Private (Custom)",
+      "description": "Stok terbatas.",
+      "price": 150000,
+      "discount": 0,
+      "tags": ["sold"],
+      "soldOut": true
+    }
+  ]
+}
 
