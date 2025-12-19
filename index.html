@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ASTRIONHUB — Thanks To</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{ --bg0:#070A12; --bg1:#0A1020; }
+    html{ scroll-behavior:smooth; }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
+        radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      background-color:#070A12;
+    }
+    .bg-grid{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: .22;
+    }
+    .bg-vignette{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.58) 100%);
+    }
+    .app{ position: relative; z-index: 1; }
+
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glass-strong{
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .g-border{
+      position: relative;
+      border-radius: 16px;
+      padding: 1px;
+      overflow: hidden;
+      background: linear-gradient(120deg,
+        rgba(124,92,255,.55),
+        rgba(25,211,255,.35),
+        rgba(46,229,157,.25),
+        rgba(255,255,255,.10)
+      );
+    }
+    .g-border > .inner{
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(10,16,32,.85), rgba(7,10,18,.72));
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.show{ opacity:1; transform: translateY(0); }
+
+    .mono{ font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+
+<body class="text-white font-sans selection:bg-white/15 selection:text-white overflow-x-hidden min-h-screen">
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+
+  <div class="app">
+    <!-- NAV -->
+    <header class="sticky top-0 z-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+        <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between max-w-full">
+          <a href="index.html" class="flex items-center gap-3 min-w-0">
+            <div class="g-border h-10 w-10 rounded-xl overflow-hidden grid place-items-center flex-none">
+              <div class="inner h-full w-full grid place-items-center">
+                <div class="h-6 w-6 text-white/90" data-lucide="sparkles"></div>
+              </div>
+            </div>
+            <div class="leading-tight min-w-0">
+              <div class="text-sm text-white/85 font-semibold truncate">ASTRIONHUB</div>
+              <div class="text-xs text-white/50 truncate">Thanks To</div>
+            </div>
+          </a>
+
+          <div class="hidden md:flex items-center gap-6 text-sm text-white/75">
+            <a class="hover:text-white transition" href="features.html">Features</a>
+            <a class="hover:text-white transition" href="snipsets.html">Snipsets</a>
+            <a class="hover:text-white transition" href="demo.html">Demo</a>
+            <a class="hover:text-white transition" href="pricing.html">Pricing</a>
+            <a class="hover:text-white transition" href="contact.html">Contact</a>
+          </div>
+
+          <button id="btnMenu" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition" aria-label="Open menu">
+            <span class="h-5 w-5" data-lucide="menu"></span>
+          </button>
+        </nav>
+
+        <div id="mobileMenu" class="hidden md:hidden mt-3 glass rounded-2xl px-4 py-3 max-w-full">
+          <div class="grid gap-1 text-sm text-white/80">
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="features.html">Features</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="snipsets.html">Snipsets</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="demo.html">Demo</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="pricing.html">Pricing</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="contact.html">Contact</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14">
+      <!-- HERO -->
+      <section class="reveal">
+        <div class="g-border">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              <div class="min-w-0">
+                <div class="text-xs text-white/55">TQTO</div>
+                <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
+                  Thanks To — yang bantu ASTRIONHUB jadi rapi
+                </h1>
+                <p class="mt-3 text-white/70 max-w-2xl">
+                  Credit untuk orang, tools, dan library yang kepake di project ini.
+                </p>
+
+                <div class="mt-5 flex flex-col sm:flex-row gap-2">
+                  <a href="index.html"
+                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
+                    <span class="h-4 w-4" data-lucide="home"></span>
+                    Home
+                  </a>
+                  <button id="btnBack"
+                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                    <span class="h-4 w-4" data-lucide="arrow-left"></span>
+                    Back
+                  </button>
+                  <a href="#credits"
+                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                    <span class="h-4 w-4" data-lucide="sparkles"></span>
+                    Lihat credit
+                  </a>
+                </div>
+              </div>
+
+              <div class="w-full lg:w-[430px] grid gap-3">
+                <div class="glass rounded-2xl border border-white/10 p-4">
+                  <div class="text-xs text-white/55">Theme</div>
+                  <div class="mt-2 text-2xl font-extrabold">AI Glass</div>
+                  <div class="mt-2 text-sm text-white/65">Neon gradient + glass UI (konsisten semua page).</div>
+                </div>
+                <div class="glass rounded-2xl border border-white/10 p-4">
+                  <div class="text-xs text-white/55">Note</div>
+                  <div class="mt-2 text-sm text-white/70">
+                    Jika ada yang mau ditambah (partner/server/creator), tinggal edit list di bawah.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- inner -->
+        </div><!-- g-border -->
+      </section>
+
+      <!-- CREDITS -->
+      <section id="credits" class="reveal mt-10">
+        <div class="g-border">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <div class="text-xs text-white/55">Credits</div>
+                <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">People & Tools</h2>
+                <p class="mt-2 text-white/70 max-w-2xl">
+                  Berikut daftar “thanks to” dalam bentuk card biar keliatan premium.
+                </p>
+              </div>
+              <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
+                <span class="h-4 w-4 text-white/70" data-lucide="badge-check"></span>
+                <span class="text-sm text-white/75">Curated list</span>
+              </div>
+            </div>
+
+            <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- You / Owner -->
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/55">Owner</div>
+                    <div class="mt-1 font-semibold text-white/90 truncate">Septian / ASTRIONHUB</div>
+                  </div>
+                  <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                    <span class="h-5 w-5" data-lucide="user"></span>
+                  </div>
+                </div>
+                <div class="mt-3 text-sm text-white/70">
+                  Ide, request fitur, dan iterasi UI/UX sampai jadi satu tema.
+                </div>
+              </div>
+
+              <!-- Tailwind -->
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/55">UI Framework</div>
+                    <div class="mt-1 font-semibold text-white/90 truncate">Tailwind CSS</div>
+                  </div>
+                  <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                    <span class="h-5 w-5" data-lucide="palette"></span>
+                  </div>
+                </div>
+                <div class="mt-3 text-sm text-white/70">
+                  Utility-first styling biar layout cepat dan konsisten.
+                </div>
+              </div>
+
+              <!-- Lucide -->
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/55">Icons</div>
+                    <div class="mt-1 font-semibold text-white/90 truncate">Lucide Icons</div>
+                  </div>
+                  <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                    <span class="h-5 w-5" data-lucide="shapes"></span>
+                  </div>
+                </div>
+                <div class="mt-3 text-sm text-white/70">
+                  Icon toolkit yang clean dan rapi untuk semua page.
+                </div>
+              </div>
+
+              <!-- Hosting -->
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/55">Deploy</div>
+                    <div class="mt-1 font-semibold text-white/90 truncate">Vercel / Hosting</div>
+                  </div>
+                  <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                    <span class="h-5 w-5" data-lucide="rocket"></span>
+                  </div>
+                </div>
+                <div class="mt-3 text-sm text-white/70">
+                  Deploy cepat dan gampang buat static pages.
+                </div>
+              </div>
+
+              <!-- Pterodactyl -->
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/55">Server Panel</div>
+                    <div class="mt-1 font-semibold text-white/90 truncate">Pterodactyl</div>
+                  </div>
+                  <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                    <span class="h-5 w-5" data-lucide="server"></span>
+                  </div>
+                </div>
+                <div class="mt-3 text-sm text-white/70">
+                  Infrastruktur untuk layanan server (kalau kamu jual server).
+                </div>
+              </div>
+
+              <!-- Community -->
+              <div class="glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/55">Support</div>
+                    <div class="mt-1 font-semibold text-white/90 truncate">Community & Friends</div>
+                  </div>
+                  <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                    <span class="h-5 w-5" data-lucide="heart-handshake"></span>
+                  </div>
+                </div>
+                <div class="mt-3 text-sm text-white/70">
+                  Tester, masukan UX, dan feedback fitur.
+                </div>
+              </div>
+            </div>
+
+            <!-- mini note -->
+            <div class="mt-6 glass rounded-2xl border border-white/10 p-5">
+              <div class="flex items-start gap-3">
+                <span class="h-5 w-5 text-white/70 flex-none" data-lucide="info"></span>
+                <div>
+                  <div class="text-sm font-semibold text-white/85">Mau versi auto dari JSON?</div>
+                  <div class="mt-1 text-sm text-white/65">
+                    Bisa dibuat juga credit list baca dari JSON (mirip pricing), tinggal bilang format JSON-nya.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="reveal mt-10">
+        <div class="g-border">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+              <div class="min-w-0">
+                <div class="text-xs text-white/55">Next</div>
+                <div class="mt-1 text-2xl font-extrabold tracking-tight">Tambahin nama kamu di sini</div>
+                <div class="mt-2 text-white/70 max-w-2xl text-sm">
+                  Page ini cocok buat “tqto”, “credits”, atau “team/support”.
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <a href="contact.html"
+                   class="btn-shine inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
+                  <span class="h-5 w-5" data-lucide="send"></span>
+                  Contact
+                </a>
+                <a href="pricing.html"
+                   class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                  <span class="h-5 w-5" data-lucide="tag"></span>
+                  Pricing
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB</div>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <a href="features.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Features</a>
+          <a href="snipsets.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Snipsets</a>
+          <a href="pricing.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
+          <a href="contact.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Icons
+    lucide.createIcons(); // data-lucide -> SVG [web:18]
+
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Mobile menu
+    const btnMenu = document.getElementById("btnMenu");
+    const mobileMenu = document.getElementById("mobileMenu");
+    btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+    mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+
+    // Back
+    document.getElementById("btnBack").addEventListener("click", () => history.back());
+
+    // Reveal
+    document.querySelectorAll(".reveal").forEach((el) => {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
+      }, { threshold: 0.12 });
+      io.observe(el);
+    });
+  </script>
+</body>
+</html>
