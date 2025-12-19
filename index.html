@@ -93,6 +93,45 @@
 
     .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
+
+    /* Verified image badge */
+    .verified-img{
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      filter: drop-shadow(0 0 10px rgba(120,255,210,.25));
+      opacity: .95;
+    }
+
+    /* Lightning animation (only owner) */
+    @keyframes zapFloat {
+      0%,100% { transform: translateY(0) rotate(-8deg) scale(1); opacity: .85; }
+      50%     { transform: translateY(-6px) rotate(10deg) scale(1.05); opacity: 1; }
+    }
+    @keyframes zapGlow {
+      0%,100% { filter: drop-shadow(0 0 8px rgba(255,220,120,.20)) drop-shadow(0 0 16px rgba(255,180,60,.12)); }
+      50%     { filter: drop-shadow(0 0 12px rgba(255,220,120,.35)) drop-shadow(0 0 26px rgba(255,180,60,.20)); }
+    }
+    .zap-badge{
+      position:absolute;
+      right:-6px;
+      top:-6px;
+      height: 30px;
+      width: 30px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,200,80,.10);
+      display:grid;
+      place-items:center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      animation: zapGlow 1.6s ease-in-out infinite;
+    }
+    .zap-badge > span{
+      width: 18px;
+      height: 18px;
+      animation: zapFloat 1.2s ease-in-out infinite;
+    }
   </style>
 </head>
 
@@ -143,16 +182,15 @@
     </header>
 
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14">
-      <!-- SINGLE SECTION: HERO + BUTTON + DIRECT TQTO BOX -->
       <section class="reveal">
         <div class="g-border">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-              <div class="min-w-0">
+              <div class="min-w-0 w-full">
                 <div class="text-xs text-white/55">TQTO</div>
                 <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Thanks To</h1>
                 <p class="mt-3 text-white/70 max-w-2xl">
-                  Di bawah tombol ini langsung tampil list TQTO dari <span class="mono">db/tqto.json</span>.
+                  List ini diambil dari <span class="mono">db/tqto.json</span>.
                 </p>
 
                 <div class="mt-5 flex flex-col sm:flex-row gap-2">
@@ -168,13 +206,12 @@
                   </button>
                 </div>
 
-                <!-- DIRECT BOX HERE -->
+                <!-- DIRECT BOX -->
                 <div class="mt-6 glass rounded-2xl border border-white/10 p-5">
                   <div class="flex items-start justify-between gap-4 flex-wrap">
                     <div>
                       <div class="text-xs text-white/55">People</div>
                       <div class="mt-1 text-lg font-extrabold tracking-tight">Credits</div>
-                      <div class="mt-1 text-sm text-white/65">Verified badge + avatar + tombol sosmed.</div>
                     </div>
                     <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
                       <span class="h-4 w-4 text-white/70" data-lucide="users"></span>
@@ -195,36 +232,10 @@
                   </div>
                 </div>
                 <!-- /DIRECT BOX -->
-
               </div>
-
-              <div class="w-full lg:w-[420px] grid gap-3">
-                <div class="glass rounded-2xl border border-white/10 p-4">
-                  <div class="flex items-start gap-3">
-                    <span class="h-5 w-5 text-white/70 flex-none" data-lucide="sparkles"></span>
-                    <div>
-                      <div class="text-sm font-semibold text-white/85">Auto layout</div>
-                      <div class="mt-1 text-sm text-white/65">
-                        1 item = center. 2+ item = grid (responsive).
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="glass rounded-2xl border border-white/10 p-4">
-                  <div class="flex items-start gap-3">
-                    <span class="h-5 w-5 text-white/70 flex-none" data-lucide="image"></span>
-                    <div>
-                      <div class="text-sm font-semibold text-white/85">Default avatar</div>
-                      <div class="mt-1 text-sm text-white/65">
-                        Otomatis pakai catbox kalau avatar di JSON kosong.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div><!-- row -->
-          </div><!-- inner -->
-        </div><!-- g-border -->
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -242,28 +253,24 @@
   </div>
 
   <script>
-    // ---- config ----
     const DEFAULT_AVATAR = "https://files.catbox.moe/2wkxjs.jpg";
+    const VERIFIED_ICON = "https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000";
     const JSON_URLS = [
       "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/tqto.json",
       "https://raw.githubusercontent.com/septianhdnatta/Website-/main/db/tqto.json",
       "https://github.com/septianhdnatta/Website-/blob/main/db/tqto.json?raw=true"
     ];
 
-    // icons + year
-    lucide.createIcons(); // [web:18]
+    lucide.createIcons(); // data-lucide -> SVG [web:18]
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // menu
     const btnMenu = document.getElementById("btnMenu");
     const mobileMenu = document.getElementById("mobileMenu");
     btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
     mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
 
-    // back
     document.getElementById("btnBack").addEventListener("click", () => history.back());
 
-    // reveal
     document.querySelectorAll(".reveal").forEach((el) => {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
@@ -271,7 +278,6 @@
       io.observe(el);
     });
 
-    // helpers
     function esc(s){
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -316,13 +322,23 @@
       `;
     }
 
-    function verifiedBadge(isVerified){
+    function verifiedImg(isVerified){
       if (!isVerified) return "";
+      return `<img class="verified-img" src="${esc(VERIFIED_ICON)}" alt="verified" />`;
+    }
+
+    function isOwner(person){
+      if (person?.isOwner === true) return true;
+      const n = String(person?.name || person?.title || "").toLowerCase();
+      return n.includes("septian");
+    }
+
+    function zapBadgeHTML(show){
+      if (!show) return "";
       return `
-        <span class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-emerald-400/10 border border-emerald-300/15 text-emerald-200">
-          <span class="h-3.5 w-3.5" data-lucide="badge-check"></span>
-          Verified
-        </span>
+        <div class="zap-badge" title="Owner">
+          <span data-lucide="zap"></span>
+        </div>
       `;
     }
 
@@ -338,19 +354,24 @@
       const gh = links.github ? (links.github.startsWith("http") ? links.github : `https://github.com/${String(links.github).replace("@","")}`) : "";
       const tg = links.telegram ? (links.telegram.startsWith("http") ? links.telegram : `https://t.me/${String(links.telegram).replace("@","")}`) : "";
       const wa = links.whatsapp ? (links.whatsapp.startsWith("http") ? links.whatsapp : toWhatsAppUrl(links.whatsapp)) : "";
-
       const open = person?.link || person?.url || "";
+
+      const owner = isOwner(person);
 
       return `
         <div class="glass rounded-2xl border border-white/10 p-5 overflow-hidden">
           <div class="flex items-start justify-between gap-3">
             <div class="flex items-start gap-3 min-w-0">
-              <img src="${esc(avatar)}" alt="${esc(name)}"
-                   class="h-14 w-14 rounded-2xl object-cover ring-soft flex-none" />
+              <div class="relative flex-none">
+                <img src="${esc(avatar)}" alt="${esc(name)}"
+                     class="h-14 w-14 rounded-2xl object-cover ring-soft" />
+                ${zapBadgeHTML(owner)}
+              </div>
+
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
                   <div class="text-base font-extrabold text-white/90 truncate">${esc(name)}</div>
-                  ${verifiedBadge(verified)}
+                  ${verifiedImg(verified)}
                 </div>
                 ${bio ? `<div class="mt-1 text-sm text-white/65 break-words">${esc(bio)}</div>` : ""}
               </div>
@@ -376,9 +397,7 @@
       if (items.length <= 1) {
         return `
           <div class="flex justify-center">
-            <div class="w-full max-w-xl">
-              ${items[0] ? card(items[0]) : ""}
-            </div>
+            <div class="w-full max-w-xl">${items[0] ? card(items[0]) : ""}</div>
           </div>
         `;
       }
@@ -402,7 +421,6 @@
       throw lastErr || new Error("Fetch failed");
     }
 
-    // boot
     (async function boot(){
       const countEl = document.getElementById("count");
       const gridWrap = document.getElementById("gridWrap");
@@ -433,3 +451,4 @@
   </script>
 </body>
 </html>
+
