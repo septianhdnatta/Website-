@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="id">
 <head>
@@ -94,43 +95,45 @@
     .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
 
-    /* Verified image badge */
+    /* verified icon (img) */
     .verified-img{
       width: 18px;
       height: 18px;
       display: inline-block;
-      filter: drop-shadow(0 0 10px rgba(120,255,210,.25));
       opacity: .95;
+      filter: drop-shadow(0 0 10px rgba(120,255,210,.18));
     }
 
-    /* Lightning animation (only owner) */
+    /* lightning badge like crown sticker */
     @keyframes zapFloat {
-      0%,100% { transform: translateY(0) rotate(-8deg) scale(1); opacity: .85; }
-      50%     { transform: translateY(-6px) rotate(10deg) scale(1.05); opacity: 1; }
+      0%,100% { transform: translateY(0) rotate(-10deg) scale(1); opacity: .95; }
+      50%     { transform: translateY(-4px) rotate(10deg) scale(1.06); opacity: 1; }
     }
-    @keyframes zapGlow {
-      0%,100% { filter: drop-shadow(0 0 8px rgba(255,220,120,.20)) drop-shadow(0 0 16px rgba(255,180,60,.12)); }
-      50%     { filter: drop-shadow(0 0 12px rgba(255,220,120,.35)) drop-shadow(0 0 26px rgba(255,180,60,.20)); }
+    @keyframes zapPulse {
+      0%,100% { box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 0 16px rgba(255,200,80,.18); }
+      50%     { box-shadow: 0 0 0 1px rgba(255,255,255,.18) inset, 0 0 26px rgba(255,200,80,.30); }
     }
     .zap-badge{
       position:absolute;
-      right:-6px;
-      top:-6px;
-      height: 30px;
-      width: 30px;
+      right:-8px;
+      top:-8px;
+      height: 28px;
+      width: 28px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,200,80,.10);
+      background: linear-gradient(180deg, rgba(255,210,120,.20), rgba(255,160,60,.08));
       display:grid;
       place-items:center;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      animation: zapGlow 1.6s ease-in-out infinite;
+      animation: zapPulse 1.35s ease-in-out infinite;
     }
-    .zap-badge > span{
-      width: 18px;
-      height: 18px;
-      animation: zapFloat 1.2s ease-in-out infinite;
+    .zap-ico{
+      width: 16px;
+      height: 16px;
+      color: rgba(255,230,170,.95);
+      filter: drop-shadow(0 0 10px rgba(255,200,80,.35));
+      animation: zapFloat 1s ease-in-out infinite;
     }
   </style>
 </head>
@@ -185,54 +188,52 @@
       <section class="reveal">
         <div class="g-border">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
-            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-              <div class="min-w-0 w-full">
-                <div class="text-xs text-white/55">TQTO</div>
-                <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Thanks To</h1>
-                <p class="mt-3 text-white/70 max-w-2xl">
-                  List ini diambil dari <span class="mono">db/tqto.json</span>.
-                </p>
+            <div class="min-w-0 w-full">
+              <div class="text-xs text-white/55">TQTO</div>
+              <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Thanks To</h1>
+              <p class="mt-3 text-white/70 max-w-2xl">
+                List diambil dari <span class="mono">db/tqto.json</span>.
+              </p>
 
-                <div class="mt-5 flex flex-col sm:flex-row gap-2">
-                  <a href="index.html"
-                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
-                    <span class="h-4 w-4" data-lucide="home"></span>
-                    Home
-                  </a>
-                  <button id="btnBack"
-                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
-                    <span class="h-4 w-4" data-lucide="arrow-left"></span>
-                    Back
-                  </button>
-                </div>
-
-                <!-- DIRECT BOX -->
-                <div class="mt-6 glass rounded-2xl border border-white/10 p-5">
-                  <div class="flex items-start justify-between gap-4 flex-wrap">
-                    <div>
-                      <div class="text-xs text-white/55">People</div>
-                      <div class="mt-1 text-lg font-extrabold tracking-tight">Credits</div>
-                    </div>
-                    <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
-                      <span class="h-4 w-4 text-white/70" data-lucide="users"></span>
-                      <span id="count" class="text-sm text-white/75">—</span>
-                    </div>
-                  </div>
-
-                  <div id="gridWrap" class="mt-4"></div>
-
-                  <div id="errorBox" class="hidden mt-4 glass rounded-2xl border border-rose-300/15 bg-rose-500/10 p-4">
-                    <div class="flex items-start gap-3 min-w-0">
-                      <span class="h-5 w-5 text-rose-200 flex-none" data-lucide="triangle-alert"></span>
-                      <div class="min-w-0">
-                        <div class="font-semibold text-rose-100">Gagal load tqto.json</div>
-                        <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- /DIRECT BOX -->
+              <div class="mt-5 flex flex-col sm:flex-row gap-2">
+                <a href="index.html"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
+                  <span class="h-4 w-4" data-lucide="home"></span>
+                  Home
+                </a>
+                <button id="btnBack"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                  <span class="h-4 w-4" data-lucide="arrow-left"></span>
+                  Back
+                </button>
               </div>
+
+              <!-- DIRECT TQTO BOX -->
+              <div class="mt-6 glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                  <div>
+                    <div class="text-xs text-white/55">People</div>
+                    <div class="mt-1 text-lg font-extrabold tracking-tight">Credits</div>
+                  </div>
+                  <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
+                    <span class="h-4 w-4 text-white/70" data-lucide="users"></span>
+                    <span id="count" class="text-sm text-white/75">—</span>
+                  </div>
+                </div>
+
+                <div id="gridWrap" class="mt-4"></div>
+
+                <div id="errorBox" class="hidden mt-4 glass rounded-2xl border border-rose-300/15 bg-rose-500/10 p-4">
+                  <div class="flex items-start gap-3 min-w-0">
+                    <span class="h-5 w-5 text-rose-200 flex-none" data-lucide="triangle-alert"></span>
+                    <div class="min-w-0">
+                      <div class="font-semibold text-rose-100">Gagal load tqto.json</div>
+                      <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /DIRECT TQTO BOX -->
             </div>
           </div>
         </div>
@@ -253,6 +254,7 @@
   </div>
 
   <script>
+    // config
     const DEFAULT_AVATAR = "https://files.catbox.moe/2wkxjs.jpg";
     const VERIFIED_ICON = "https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000";
     const JSON_URLS = [
@@ -261,7 +263,8 @@
       "https://github.com/septianhdnatta/Website-/blob/main/db/tqto.json?raw=true"
     ];
 
-    lucide.createIcons(); // data-lucide -> SVG [web:18]
+    // init
+    lucide.createIcons(); // [web:18]
     document.getElementById("year").textContent = new Date().getFullYear();
 
     const btnMenu = document.getElementById("btnMenu");
@@ -278,6 +281,7 @@
       io.observe(el);
     });
 
+    // helpers
     function esc(s){
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -337,7 +341,7 @@
       if (!show) return "";
       return `
         <div class="zap-badge" title="Owner">
-          <span data-lucide="zap"></span>
+          <span class="zap-ico" data-lucide="zap"></span>
         </div>
       `;
     }
@@ -414,13 +418,14 @@
         try {
           const url = base + (base.includes("?") ? "&" : "?") + "t=" + Date.now();
           const res = await fetch(url, { cache: "no-store" });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
           return await res.json();
         } catch (e) { lastErr = e; }
       }
       throw lastErr || new Error("Fetch failed");
     }
 
+    // boot
     (async function boot(){
       const countEl = document.getElementById("count");
       const gridWrap = document.getElementById("gridWrap");
@@ -451,4 +456,3 @@
   </script>
 </body>
 </html>
-
