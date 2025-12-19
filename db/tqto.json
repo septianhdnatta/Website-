@@ -1,1 +1,31 @@
 
+{
+  "items": [
+    {
+      "name": "Septian Dinata",
+      "verified": true,
+      "bio": "Owner ASTRIONHUB • Developer & builder.",
+      "avatar": "https://files.catbox.moe/2wkxjs.jpg",
+      "socials": {
+        "ig": "septianhdnatta",
+        "github": "septianhdnatta",
+        "wa": "6281234567890",
+        "tg": "username_telegram"
+      },
+      "link": "https://github.com/septianhdnatta"
+    },
+    {
+      "name": "Contributor / Friend",
+      "verified": true,
+      "bio": "Tester • Feedback UI/UX • Support.",
+      "avatar": "https://files.catbox.moe/2wkxjs.jpg",
+      "socials": {
+        "ig": "username_ig",
+        "github": "username_github",
+        "wa": "6281230000000",
+        "tg": "username_telegram"
+      },
+      "link": "https://instagram.com/username_ig"
+    }
+  ]
+}
