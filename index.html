@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="id">
 <head>
@@ -87,11 +88,6 @@
     .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
 
-    .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
-    .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
-    .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
-
-    /* subtle ring for avatar */
     .ring-soft{
       box-shadow:
         0 0 0 1px rgba(255,255,255,.10) inset,
@@ -118,7 +114,7 @@
             </div>
             <div class="leading-tight min-w-0">
               <div class="text-sm text-white/85 font-semibold truncate">ASTRIONHUB</div>
-              <div class="text-xs text-white/50 truncate">Thanks To (JSON)</div>
+              <div class="text-xs text-white/50 truncate">Thanks To</div>
             </div>
           </a>
 
@@ -156,10 +152,10 @@
               <div class="min-w-0">
                 <div class="text-xs text-white/55">TQTO</div>
                 <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
-                  Thanks To — versi JSON
+                  Thanks To
                 </h1>
                 <p class="mt-3 text-white/70 max-w-2xl">
-                  Data credit dibaca dari <span class="mono">db/tqto.json</span>. Kalau isi cuma 1 orang, card auto center.
+                  Credit list dibaca dari <span class="mono">db/tqto.json</span> dan tampil dalam cards + avatar.
                 </p>
 
                 <div class="mt-5 flex flex-col sm:flex-row gap-2">
@@ -183,19 +179,19 @@
 
               <div class="w-full lg:w-[440px] grid gap-3">
                 <div class="glass rounded-2xl border border-white/10 p-4">
-                  <div class="text-xs text-white/55">Foto profil default</div>
-                  <div class="mt-2 flex items-center gap-3">
-                    <img id="defaultAvatar" class="h-12 w-12 rounded-2xl object-cover ring-soft" alt="Default avatar" />
-                    <div class="min-w-0">
-                      <div class="text-sm font-semibold text-white/85 truncate">Catbox avatar</div>
-                      <div class="text-xs text-white/55 truncate">Dipakai kalau item tidak punya avatar sendiri.</div>
+                  <div class="flex items-start gap-3">
+                    <span class="h-5 w-5 text-white/70 flex-none" data-lucide="info"></span>
+                    <div>
+                      <div class="text-sm font-semibold text-white/85">Auto layout</div>
+                      <div class="mt-1 text-sm text-white/65">
+                        1 item = center. 2+ item = grid. Ada badge verified + tombol sosmed.
+                      </div>
                     </div>
                   </div>
                 </div>
-
                 <div class="glass rounded-2xl border border-white/10 p-4">
-                  <div class="text-xs text-white/55">Status</div>
-                  <div id="status" class="mt-2 text-sm text-white/70">Loading tqto.json…</div>
+                  <div class="text-xs text-white/55">Total</div>
+                  <div id="count" class="mt-1 text-2xl font-extrabold">—</div>
                 </div>
               </div>
             </div>
@@ -213,9 +209,10 @@
                 <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">People</h2>
                 <p class="mt-2 text-white/70 max-w-2xl">Klik tombol sosmed untuk buka link.</p>
               </div>
+
               <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
                 <span class="h-4 w-4 text-white/70" data-lucide="badge-check"></span>
-                <span id="count" class="text-sm text-white/75">0</span>
+                <span class="text-sm text-white/75">Verified supported</span>
               </div>
             </div>
 
@@ -227,9 +224,6 @@
                 <div class="min-w-0">
                   <div class="font-semibold text-rose-100">Gagal load tqto.json</div>
                   <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
-                  <div class="mt-3 text-xs text-rose-100/70">
-                    Coba ganti URL raw jadi format normal tanpa <span class="mono">refs/heads</span>. [web:475]
-                  </div>
                 </div>
               </div>
             </div>
@@ -262,9 +256,7 @@
     ];
 
     // ---- init icons ----
-    lucide.createIcons(); // Lucide CDN uses data-lucide + createIcons() [web:18]
-
-    // ---- UI small ----
+    lucide.createIcons(); // data-lucide -> SVG [web:18]
     document.getElementById("year").textContent = new Date().getFullYear();
     document.getElementById("btnBack").addEventListener("click", () => history.back());
 
@@ -272,8 +264,6 @@
     const mobileMenu = document.getElementById("mobileMenu");
     btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
     mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
-
-    document.getElementById("defaultAvatar").src = DEFAULT_AVATAR;
 
     // reveal
     document.querySelectorAll(".reveal").forEach((el) => {
@@ -284,8 +274,6 @@
     });
 
     // ---- helpers ----
-    const $ = (q, root=document) => root.querySelector(q);
-
     function esc(s){
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -296,10 +284,6 @@
     }
 
     function normalizeData(raw){
-      // Accept:
-      // - { items: [...] }
-      // - { tqto: [...] }
-      // - [ ... ]
       if (Array.isArray(raw)) return raw;
       if (Array.isArray(raw?.items)) return raw.items;
       if (Array.isArray(raw?.tqto)) return raw.tqto;
@@ -320,9 +304,7 @@
     function toWhatsAppUrl(wa){
       const digits = String(wa || "").replace(/[^\d]/g, "");
       if (!digits) return "";
-      return digits.startsWith("62")
-        ? `https://wa.me/${digits}`
-        : `https://wa.me/62${digits}`;
+      return digits.startsWith("62") ? `https://wa.me/${digits}` : `https://wa.me/62${digits}`;
     }
 
     function iconBtn(href, icon, label){
@@ -354,9 +336,9 @@
       const avatar = person?.avatar || person?.photo || person?.pfp || DEFAULT_AVATAR;
       const links = normLinks(person);
 
-      const ig = links.instagram ? (links.instagram.startsWith("http") ? links.instagram : `https://instagram.com/${links.instagram.replace("@","")}`) : "";
-      const gh = links.github ? (links.github.startsWith("http") ? links.github : `https://github.com/${links.github.replace("@","")}`) : "";
-      const tg = links.telegram ? (links.telegram.startsWith("http") ? links.telegram : `https://t.me/${links.telegram.replace("@","")}`) : "";
+      const ig = links.instagram ? (links.instagram.startsWith("http") ? links.instagram : `https://instagram.com/${String(links.instagram).replace("@","")}`) : "";
+      const gh = links.github ? (links.github.startsWith("http") ? links.github : `https://github.com/${String(links.github).replace("@","")}`) : "";
+      const tg = links.telegram ? (links.telegram.startsWith("http") ? links.telegram : `https://t.me/${String(links.telegram).replace("@","")}`) : "";
       const wa = links.whatsapp ? (links.whatsapp.startsWith("http") ? links.whatsapp : toWhatsAppUrl(links.whatsapp)) : "";
 
       const open = person?.link || person?.url || "";
@@ -372,7 +354,7 @@
                   <div class="text-base font-extrabold text-white/90 truncate">${esc(name)}</div>
                   ${verifiedBadge(verified)}
                 </div>
-                <div class="mt-1 text-sm text-white/65 break-words">${esc(bio)}</div>
+                ${bio ? `<div class="mt-1 text-sm text-white/65 break-words">${esc(bio)}</div>` : ""}
               </div>
             </div>
 
@@ -393,7 +375,6 @@
     }
 
     function wrapGrid(items){
-      // 1 item -> center
       if (items.length <= 1) {
         return `
           <div class="flex justify-center">
@@ -403,7 +384,6 @@
           </div>
         `;
       }
-      // 2+ -> grid
       return `
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           ${items.map(card).join("")}
@@ -426,34 +406,28 @@
 
     // ---- boot ----
     (async function boot(){
-      const status = document.getElementById("status");
-      const count = document.getElementById("count");
+      const countEl = document.getElementById("count");
       const gridWrap = document.getElementById("gridWrap");
       const errorBox = document.getElementById("errorBox");
       const errorText = document.getElementById("errorText");
 
       try {
-        status.textContent = "Loading tqto.json…";
         const raw = await fetchFirstWorkingJson();
         const items = normalizeData(raw);
 
-        // apply default avatar if missing
         const normalized = items.map(x => ({
           ...x,
           avatar: x?.avatar || x?.photo || x?.pfp || DEFAULT_AVATAR
         }));
 
-        count.textContent = `${normalized.length} items`;
-        status.textContent = normalized.length ? "Loaded." : "JSON kosong.";
+        countEl.textContent = `${normalized.length} item`;
         gridWrap.innerHTML = wrapGrid(normalized);
-
         errorBox.classList.add("hidden");
       } catch (e) {
-        status.textContent = "Failed.";
+        countEl.textContent = "0 item";
         errorBox.classList.remove("hidden");
         errorText.textContent = String(e?.message || e);
         gridWrap.innerHTML = "";
-        count.textContent = "0 items";
       } finally {
         lucide.createIcons();
       }
@@ -461,4 +435,3 @@
   </script>
 </body>
 </html>
-
