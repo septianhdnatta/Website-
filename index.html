@@ -43,11 +43,11 @@
         linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
       background-size: 44px 44px;
-      opacity: .18;
+      opacity: .22;
     }
     .bg-vignette{
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.20) 60%, rgba(0,0,0,.55) 100%);
+      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.58) 100%);
     }
     .app{ position: relative; z-index: 1; }
 
@@ -59,7 +59,7 @@
       -webkit-backdrop-filter: blur(14px);
     }
     .glass-strong{
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
       border: 1px solid rgba(255,255,255,.14);
       box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 20px 70px rgba(0,0,0,.55);
       backdrop-filter: blur(16px);
@@ -83,32 +83,8 @@
       border: 1px solid rgba(255,255,255,.10);
     }
 
-    /* HERO banner (real elements, not pseudo-elements) */
-    .hero{
-      position: relative;
-      border-radius: 28px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-    }
-    .hero .hero-glow{
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(900px 420px at 12% 25%, rgba(124,92,255,.30), transparent 62%),
-        radial-gradient(750px 420px at 88% 30%, rgba(25,211,255,.22), transparent 62%),
-        radial-gradient(700px 420px at 38% 92%, rgba(46,229,157,.16), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      pointer-events:none;
-    }
-    .hero .hero-noise{
-      position:absolute; inset:0;
-      background:
-        radial-gradient(70% 55% at 50% 35%, rgba(0,0,0,0) 0%, rgba(0,0,0,.28) 70%, rgba(0,0,0,.55) 100%);
-      pointer-events:none;
-    }
-    .hero .hero-content{ position: relative; z-index: 1; }
-
     .mono{ font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
     .ring-soft{
       box-shadow:
         0 0 0 1px rgba(255,255,255,.10) inset,
@@ -119,12 +95,42 @@
     .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
 
+    /* verified icon (img only) */
     .verified-img{
       width: 18px;
       height: 18px;
       display: inline-block;
       opacity: .95;
       filter: drop-shadow(0 0 10px rgba(120,255,210,.18));
+    }
+
+    /* banner layer for card header */
+    .banner-wrap{
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .banner-bg{
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.08);
+      filter: saturate(1.05) contrast(1.02);
+      opacity: .85;
+    }
+    .banner-shade{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(80% 70% at 0% 0%, rgba(255,255,255,.08), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.68));
+    }
+    .banner-content{
+      position: relative;
+      padding: 14px;
     }
   </style>
 </head>
@@ -134,6 +140,7 @@
   <div class="bg-vignette"></div>
 
   <div class="app">
+    <!-- NAV -->
     <header class="sticky top-0 z-50">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
         <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between max-w-full">
@@ -175,78 +182,56 @@
     </header>
 
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14">
-      <!-- HERO banner -->
       <section class="reveal">
-        <div class="hero min-h-[240px] sm:min-h-[280px]">
-          <div class="hero-glow"></div>
-          <div class="hero-noise"></div>
-
-          <div class="hero-content p-6 sm:p-10">
-            <div class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
-              <div class="min-w-0">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-white/75">
-                  <span class="h-4 w-4 text-white/80" data-lucide="sparkles"></span>
-                  <span>TQTO / Credits</span>
-                  <span class="mx-1 h-1 w-1 rounded-full bg-white/25"></span>
-                  <span class="text-white/55">Updated banner</span>
-                </div>
-
-                <h1 class="mt-5 text-4xl sm:text-5xl font-extrabold tracking-tight">Thanks To</h1>
-
-                <p class="mt-4 text-base sm:text-lg text-white/70 max-w-2xl">
-                  List diambil dari <span class="mono">db/tqto.json</span> dan tampil sebagai cards dengan avatar.
-                </p>
-
-                <div class="mt-7 flex flex-col sm:flex-row gap-2">
-                  <a href="index.html"
-                     class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
-                    <span class="h-5 w-5" data-lucide="home"></span>
-                    Home
-                  </a>
-                  <button id="btnBack"
-                     class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
-                    <span class="h-5 w-5" data-lucide="arrow-left"></span>
-                    Back
-                  </button>
-                </div>
-              </div>
-
-              <div class="glass rounded-2xl border border-white/10 px-4 py-3 flex items-center gap-3">
-                <span class="h-5 w-5 text-white/70" data-lucide="users"></span>
-                <div class="leading-tight">
-                  <div class="text-xs text-white/55">Total</div>
-                  <div id="count" class="text-sm font-semibold text-white/85">—</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TQTO content box -->
-      <section class="reveal mt-6">
         <div class="g-border">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
-            <div class="flex items-start justify-between gap-4 flex-wrap">
-              <div>
-                <div class="text-xs text-white/55">People</div>
-                <div class="mt-1 text-2xl font-extrabold tracking-tight">Credits</div>
-                <div class="mt-2 text-sm text-white/65">Klik tombol sosmed untuk buka link.</div>
+            <div class="min-w-0 w-full">
+              <div class="text-xs text-white/55">TQTO</div>
+              <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Thanks To</h1>
+              <p class="mt-3 text-white/70 max-w-2xl">
+                List diambil dari <span class="mono">db/tqto.json</span>.
+              </p>
+
+              <div class="mt-5 flex flex-col sm:flex-row gap-2">
+                <a href="index.html"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
+                  <span class="h-4 w-4" data-lucide="home"></span>
+                  Home
+                </a>
+                <button id="btnBack"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                  <span class="h-4 w-4" data-lucide="arrow-left"></span>
+                  Back
+                </button>
               </div>
-            </div>
 
-            <div id="gridWrap" class="mt-6"></div>
+              <!-- DIRECT TQTO BOX -->
+              <div class="mt-6 glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                  <div>
+                    <div class="text-xs text-white/55">People</div>
+                    <div class="mt-1 text-lg font-extrabold tracking-tight">Credits</div>
+                  </div>
+                  <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
+                    <span class="h-4 w-4 text-white/70" data-lucide="users"></span>
+                    <span id="count" class="text-sm text-white/75">—</span>
+                  </div>
+                </div>
 
-            <div id="errorBox" class="hidden mt-6 glass rounded-2xl border border-rose-300/15 bg-rose-500/10 p-4">
-              <div class="flex items-start gap-3 min-w-0">
-                <span class="h-5 w-5 text-rose-200 flex-none" data-lucide="triangle-alert"></span>
-                <div class="min-w-0">
-                  <div class="font-semibold text-rose-100">Gagal load tqto.json</div>
-                  <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
+                <div id="gridWrap" class="mt-4"></div>
+
+                <div id="errorBox" class="hidden mt-4 glass rounded-2xl border border-rose-300/15 bg-rose-500/10 p-4">
+                  <div class="flex items-start gap-3 min-w-0">
+                    <span class="h-5 w-5 text-rose-200 flex-none" data-lucide="triangle-alert"></span>
+                    <div class="min-w-0">
+                      <div class="font-semibold text-rose-100">Gagal load tqto.json</div>
+                      <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <!-- /DIRECT TQTO BOX -->
             </div>
-
           </div>
         </div>
       </section>
@@ -267,6 +252,7 @@
 
   <script>
     const DEFAULT_AVATAR = "https://files.catbox.moe/2wkxjs.jpg";
+    const DEFAULT_BANNER = "https://files.catbox.moe/ze4bt3.jpg";
     const VERIFIED_ICON = "https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000";
     const JSON_URLS = [
       "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/tqto.json",
@@ -274,7 +260,7 @@
       "https://github.com/septianhdnatta/Website-/blob/main/db/tqto.json?raw=true"
     ];
 
-    lucide.createIcons(); // convert data-lucide -> svg [web:18]
+    lucide.createIcons(); // [web:18]
     document.getElementById("year").textContent = new Date().getFullYear();
 
     const btnMenu = document.getElementById("btnMenu");
@@ -346,6 +332,7 @@
       const verified = !!(person?.verified ?? person?.isVerified ?? person?.verify);
 
       const avatar = person?.avatar || person?.photo || person?.pfp || DEFAULT_AVATAR;
+      const banner = person?.banner || person?.bg || person?.cover || DEFAULT_BANNER;
       const links = normLinks(person);
 
       const ig = links.instagram ? (links.instagram.startsWith("http") ? links.instagram : `https://instagram.com/${String(links.instagram).replace("@","")}`) : "";
@@ -356,22 +343,30 @@
 
       return `
         <div class="glass rounded-2xl border border-white/10 p-5 overflow-hidden">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex items-start gap-3 min-w-0">
-              <img src="${esc(avatar)}" alt="${esc(name)}"
-                   class="h-14 w-14 rounded-2xl object-cover ring-soft flex-none" />
+          <!-- header with banner behind avatar+name+verified -->
+          <div class="banner-wrap">
+            <div class="banner-bg" style="background-image:url('${esc(banner)}')"></div>
+            <div class="banner-shade"></div>
 
-              <div class="min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <div class="text-base font-extrabold text-white/90 truncate">${esc(name)}</div>
-                  ${verifiedImg(verified)}
+            <div class="banner-content">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3 min-w-0">
+                  <img src="${esc(avatar)}" alt="${esc(name)}"
+                       class="h-14 w-14 rounded-2xl object-cover ring-soft flex-none" />
+
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <div class="text-base font-extrabold text-white/95 truncate">${esc(name)}</div>
+                      ${verifiedImg(verified)}
+                    </div>
+                    ${bio ? `<div class="mt-1 text-sm text-white/75 break-words">${esc(bio)}</div>` : ""}
+                  </div>
                 </div>
-                ${bio ? `<div class="mt-1 text-sm text-white/65 break-words">${esc(bio)}</div>` : ""}
-              </div>
-            </div>
 
-            <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
-              <span class="h-5 w-5 text-white/75" data-lucide="sparkles"></span>
+                <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                  <span class="h-5 w-5 text-white/80" data-lucide="sparkles"></span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -395,7 +390,7 @@
         `;
       }
       return `
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
           ${items.map(card).join("")}
         </div>
       `;
@@ -426,7 +421,8 @@
 
         const normalized = items.map(x => ({
           ...x,
-          avatar: x?.avatar || x?.photo || x?.pfp || DEFAULT_AVATAR
+          avatar: x?.avatar || x?.photo || x?.pfp || DEFAULT_AVATAR,
+          banner: x?.banner || x?.bg || x?.cover || DEFAULT_BANNER
         }));
 
         countEl.textContent = `${normalized.length} item`;
@@ -438,7 +434,7 @@
         errorText.textContent = String(e?.message || e);
         gridWrap.innerHTML = "";
       } finally {
-        lucide.createIcons(); // [web:18]
+        lucide.createIcons();
       }
     })();
   </script>
