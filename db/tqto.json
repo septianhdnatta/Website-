@@ -1,4 +1,3 @@
-
 {
   "items": [
     {
@@ -6,6 +5,7 @@
       "verified": true,
       "bio": "Owner ASTRIONHUB • Developer & builder.",
       "avatar": "https://files.catbox.moe/2wkxjs.jpg",
+      "banner": "https://files.catbox.moe/ze4bt3.jpg",
       "socials": {
         "ig": "septianhdnatta",
         "github": "septianhdnatta",
@@ -15,10 +15,11 @@
       "link": "https://github.com/septianhdnatta"
     },
     {
-      "name": "Contributor / Friend",
-      "verified": true,
-      "bio": "Tester • Feedback UI/UX • Support.",
+      "name": "Contributor",
+      "verified": false,
+      "bio": "Support • Feedback UI/UX.",
       "avatar": "https://files.catbox.moe/2wkxjs.jpg",
+      "banner": "https://files.catbox.moe/ze4bt3.jpg",
       "socials": {
         "ig": "username_ig",
         "github": "username_github",
@@ -29,3 +30,4 @@
     }
   ]
 }
+
