@@ -95,45 +95,13 @@
     .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.show{ opacity:1; transform: translateY(0); }
 
-    /* verified icon (img) */
+    /* verified icon (img only, no text) */
     .verified-img{
       width: 18px;
       height: 18px;
       display: inline-block;
       opacity: .95;
       filter: drop-shadow(0 0 10px rgba(120,255,210,.18));
-    }
-
-    /* lightning badge like crown sticker */
-    @keyframes zapFloat {
-      0%,100% { transform: translateY(0) rotate(-10deg) scale(1); opacity: .95; }
-      50%     { transform: translateY(-4px) rotate(10deg) scale(1.06); opacity: 1; }
-    }
-    @keyframes zapPulse {
-      0%,100% { box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 0 16px rgba(255,200,80,.18); }
-      50%     { box-shadow: 0 0 0 1px rgba(255,255,255,.18) inset, 0 0 26px rgba(255,200,80,.30); }
-    }
-    .zap-badge{
-      position:absolute;
-      right:-8px;
-      top:-8px;
-      height: 28px;
-      width: 28px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(255,210,120,.20), rgba(255,160,60,.08));
-      display:grid;
-      place-items:center;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      animation: zapPulse 1.35s ease-in-out infinite;
-    }
-    .zap-ico{
-      width: 16px;
-      height: 16px;
-      color: rgba(255,230,170,.95);
-      filter: drop-shadow(0 0 10px rgba(255,200,80,.35));
-      animation: zapFloat 1s ease-in-out infinite;
     }
   </style>
 </head>
@@ -254,7 +222,6 @@
   </div>
 
   <script>
-    // config
     const DEFAULT_AVATAR = "https://files.catbox.moe/2wkxjs.jpg";
     const VERIFIED_ICON = "https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000";
     const JSON_URLS = [
@@ -263,8 +230,7 @@
       "https://github.com/septianhdnatta/Website-/blob/main/db/tqto.json?raw=true"
     ];
 
-    // init
-    lucide.createIcons(); // [web:18]
+    lucide.createIcons(); // data-lucide -> SVG [web:18]
     document.getElementById("year").textContent = new Date().getFullYear();
 
     const btnMenu = document.getElementById("btnMenu");
@@ -281,7 +247,6 @@
       io.observe(el);
     });
 
-    // helpers
     function esc(s){
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -331,21 +296,6 @@
       return `<img class="verified-img" src="${esc(VERIFIED_ICON)}" alt="verified" />`;
     }
 
-    function isOwner(person){
-      if (person?.isOwner === true) return true;
-      const n = String(person?.name || person?.title || "").toLowerCase();
-      return n.includes("septian");
-    }
-
-    function zapBadgeHTML(show){
-      if (!show) return "";
-      return `
-        <div class="zap-badge" title="Owner">
-          <span class="zap-ico" data-lucide="zap"></span>
-        </div>
-      `;
-    }
-
     function card(person){
       const name = person?.name || person?.title || "Untitled";
       const bio = person?.bio || person?.desc || person?.description || "";
@@ -360,17 +310,12 @@
       const wa = links.whatsapp ? (links.whatsapp.startsWith("http") ? links.whatsapp : toWhatsAppUrl(links.whatsapp)) : "";
       const open = person?.link || person?.url || "";
 
-      const owner = isOwner(person);
-
       return `
         <div class="glass rounded-2xl border border-white/10 p-5 overflow-hidden">
           <div class="flex items-start justify-between gap-3">
             <div class="flex items-start gap-3 min-w-0">
-              <div class="relative flex-none">
-                <img src="${esc(avatar)}" alt="${esc(name)}"
-                     class="h-14 w-14 rounded-2xl object-cover ring-soft" />
-                ${zapBadgeHTML(owner)}
-              </div>
+              <img src="${esc(avatar)}" alt="${esc(name)}"
+                   class="h-14 w-14 rounded-2xl object-cover ring-soft flex-none" />
 
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
@@ -418,14 +363,13 @@
         try {
           const url = base + (base.includes("?") ? "&" : "?") + "t=" + Date.now();
           const res = await fetch(url, { cache: "no-store" });
-          if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return await res.json();
         } catch (e) { lastErr = e; }
       }
       throw lastErr || new Error("Fetch failed");
     }
 
-    // boot
     (async function boot(){
       const countEl = document.getElementById("count");
       const gridWrap = document.getElementById("gridWrap");
