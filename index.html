@@ -108,47 +108,6 @@
       opacity: .55;
     }
 
-    /* Hinako loader ring */
-    .ai-ring{
-      position: relative;
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      background:
-        conic-gradient(
-          from 0deg,
-          rgba(34,197,94,.0),
-          rgba(34,197,94,.95),
-          rgba(34,197,94,.0)
-        );
-      filter: drop-shadow(0 0 18px rgba(34,197,94,.18));
-      animation: ai-spin 1.25s linear infinite;
-    }
-    .ai-ring::before{
-      content:"";
-      position:absolute;
-      inset: 6px;
-      border-radius: 999px;
-      background: rgba(7,10,18,.75);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
-    }
-    .ai-ring::after{
-      content:"";
-      position:absolute;
-      inset: 12px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-      animation: ai-shimmer 1.6s ease-in-out infinite;
-      opacity: .7;
-    }
-    @keyframes ai-spin { to { transform: rotate(360deg); } }
-    @keyframes ai-shimmer {
-      0%   { transform: translateX(-28px); opacity: .25; }
-      50%  { transform: translateX(0px);   opacity: .9; }
-      100% { transform: translateX(28px);  opacity: .25; }
-    }
-
     .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
     .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
     .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
@@ -187,6 +146,7 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <!-- Toggle V1/V2 -->
           <div class="hidden sm:flex items-center gap-1 p-1 rounded-2xl border border-white/10 bg-white/5">
             <button id="btnV1" class="px-3 py-1.5 rounded-xl text-sm font-semibold text-white/80 hover:bg-white/10 transition">V1</button>
             <button id="btnV2" class="px-3 py-1.5 rounded-xl text-sm font-semibold bg-white text-black transition">V2</button>
@@ -222,6 +182,7 @@
   <main class="relative">
     <!-- ========================= VIEW V2 ========================= -->
     <div id="viewV2">
+      <!-- HERO V2 -->
       <section id="home-v2" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-12 sm:pb-16">
         <div class="grid lg:grid-cols-12 gap-8 items-center">
           <div class="lg:col-span-7">
@@ -277,6 +238,7 @@
             </div>
           </div>
 
+          <!-- Hero card -->
           <div class="lg:col-span-5">
             <div class="g-border">
               <div class="inner p-5 sm:p-6 rounded-2xl glass-strong">
@@ -351,7 +313,7 @@
         </div>
       </section>
 
-      <!-- AI SECTION V2 -->
+      <!-- AI SECTION V2 (PROFILE ONLY) -->
       <section id="ai-chat-v2" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
         <div class="g-border">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
@@ -359,7 +321,7 @@
               <div>
                 <div class="text-xs text-white/55">AI</div>
                 <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">Hinako AI</h2>
-                <p class="mt-2 text-white/70 max-w-2xl">Profile card (AI chat box dihapus).</p>
+                <p class="mt-2 text-white/70 max-w-2xl">Profile card (tanpa loader).</p>
               </div>
 
               <div class="inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full bg-emerald-400/10 border border-emerald-300/15 text-emerald-200">
@@ -372,17 +334,11 @@
               <div class="lg:col-span-7">
                 <div class="glass rounded-2xl border border-white/10 p-5 sm:p-6">
                   <div class="flex items-center gap-4">
-                    <!-- AVATAR + LOADER (FIXED TAGS) -->
-                    <div class="relative flex-none">
-                      <img
-                        src="https://files.catbox.moe/2wkxjs.jpg"
-                        alt="Hinako"
-                        class="h-16 w-16 rounded-2xl object-cover border border-white/10 bg-white/5"
-                      />
-                      <div class="absolute -top-2 -right-2">
-                        <div class="ai-ring" title="Online"></div>
-                      </div>
-                    </div>
+                    <img
+                      src="https://files.catbox.moe/2wkxjs.jpg"
+                      alt="Hinako"
+                      class="h-16 w-16 rounded-2xl object-cover border border-white/10 bg-white/5"
+                    />
 
                     <div class="min-w-0">
                       <div class="flex items-center gap-2">
@@ -508,6 +464,7 @@
 
     <!-- ========================= VIEW V1 ========================= -->
     <div id="viewV1" class="hidden">
+      <!-- HERO V1 -->
       <section id="home-v1" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-12 sm:pb-16">
         <div class="g-border">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
@@ -558,6 +515,7 @@
         </div>
       </section>
 
+      <!-- AI SECTION V1 -->
       <section id="ai-chat-v1" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
         <div class="g-border">
           <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
@@ -565,7 +523,7 @@
               <div class="min-w-0">
                 <div class="text-xs text-white/55">AI</div>
                 <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight">Hinako AI (V1)</h2>
-                <p class="mt-2 text-white/70 max-w-2xl">AI chat box dihapus, diganti profile card.</p>
+                <p class="mt-2 text-white/70 max-w-2xl">Profile card (tanpa loader).</p>
               </div>
 
               <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
@@ -578,18 +536,11 @@
               <div class="lg:col-span-7 min-w-0">
                 <div class="glass rounded-2xl border border-white/10 p-5 sm:p-6 w-full max-w-full">
                   <div class="flex items-center gap-4">
-                    <!-- AVATAR + LOADER (ALSO FIXED) -->
-                    <div class="relative flex-none">
-                      <img
-                        src="https://files.catbox.moe/2wkxjs.jpg"
-                        alt="Hinako"
-                        class="h-16 w-16 rounded-2xl object-cover border border-white/10 bg-white/5"
-                      />
-                      <div class="absolute -top-2 -right-2">
-                        <div class="ai-ring" title="Online"></div>
-                      </div>
-                    </div>
-
+                    <img
+                      src="https://files.catbox.moe/2wkxjs.jpg"
+                      alt="Hinako"
+                      class="h-16 w-16 rounded-2xl object-cover border border-white/10 bg-white/5"
+                    />
                     <div class="min-w-0">
                       <div class="flex items-center gap-2">
                         <div class="text-lg font-extrabold truncate">Hinako AI</div>
@@ -644,6 +595,7 @@
         </div>
       </section>
 
+      <!-- FAQ V1 -->
       <section id="faq-v1" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
         <div class="glass rounded-2xl border border-white/10 p-6 sm:p-8">
           <div class="text-xs text-white/55">FAQ</div>
@@ -683,6 +635,7 @@
   </main>
 
   <script>
+    // ===== Shared helpers =====
     const INDEX_VIEW_KEY = "astrionhub_index_view_v1";
     function $(id){ return document.getElementById(id); }
 
@@ -696,6 +649,7 @@
       try { localStorage.setItem(key, val); } catch {}
     }
 
+    // ===== Toggle V1/V2 (state) =====
     const viewV1 = $("viewV1");
     const viewV2 = $("viewV2");
     const navSub = $("navSub");
@@ -737,11 +691,13 @@
     btnV1m?.addEventListener("click", () => applyView("v1"));
     btnV2m?.addEventListener("click", () => applyView("v2"));
 
+    // ===== Mobile menu =====
     const btnMenu = $("btnMenu");
     const mobileMenu = $("mobileMenu");
     btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
     mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
 
+    // ===== Scroll routing (home/ai-chat/faq) =====
     function currentMode(){
       return lsGet(INDEX_VIEW_KEY, "v2") === "v1" ? "v1" : "v2";
     }
@@ -762,6 +718,7 @@
       });
     });
 
+    // ===== FAQ accordion (V2 only) =====
     function initFaqV2(){
       document.querySelectorAll("#faq-v2 .faq-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -778,6 +735,7 @@
       });
     }
 
+    // ===== Boot =====
     (function boot(){
       const y = new Date().getFullYear();
       const y1 = document.getElementById("year");
