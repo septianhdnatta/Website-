@@ -1,0 +1,442 @@
+
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ASTRIONHUB — Thanks To</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{ --bg0:#070A12; --bg1:#0A1020; }
+    html{ scroll-behavior:smooth; }
+    body{
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 650px at 85% 15%, rgba(25,211,255,.14), transparent 60%),
+        radial-gradient(900px 700px at 40% 92%, rgba(46,229,157,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      background-color:#070A12;
+    }
+    .bg-grid{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: .22;
+    }
+    .bg-vignette{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(70% 55% at 50% 35%, transparent 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.58) 100%);
+    }
+    .app{ position: relative; z-index: 1; }
+
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .glass-strong{
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .g-border{
+      position: relative;
+      border-radius: 16px;
+      padding: 1px;
+      overflow: hidden;
+      background: linear-gradient(120deg,
+        rgba(124,92,255,.55),
+        rgba(25,211,255,.35),
+        rgba(46,229,157,.25),
+        rgba(255,255,255,.10)
+      );
+    }
+    .g-border > .inner{
+      border-radius: 15px;
+      background: linear-gradient(180deg, rgba(10,16,32,.85), rgba(7,10,18,.72));
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .mono{ font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .ring-soft{
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.10) inset,
+        0 0 0 1px rgba(0,0,0,.25),
+        0 20px 70px rgba(0,0,0,.45);
+    }
+
+    .reveal{ opacity:0; transform: translateY(10px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.show{ opacity:1; transform: translateY(0); }
+
+    /* verified icon (img only) */
+    .verified-img{
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      opacity: .95;
+      filter: drop-shadow(0 0 10px rgba(120,255,210,.18));
+    }
+
+    /* banner layer for card header */
+    .banner-wrap{
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .banner-bg{
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.08);
+      filter: saturate(1.05) contrast(1.02);
+      opacity: .85;
+    }
+    .banner-shade{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(80% 70% at 0% 0%, rgba(255,255,255,.08), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.68));
+    }
+    .banner-content{
+      position: relative;
+      padding: 14px;
+    }
+  </style>
+</head>
+
+<body class="text-white font-sans selection:bg-white/15 selection:text-white overflow-x-hidden min-h-screen">
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+
+  <div class="app">
+    <!-- NAV -->
+    <header class="sticky top-0 z-50">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+        <nav class="glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between max-w-full">
+          <a href="index.html" class="flex items-center gap-3 min-w-0">
+            <div class="g-border h-10 w-10 rounded-xl overflow-hidden grid place-items-center flex-none">
+              <div class="inner h-full w-full grid place-items-center">
+                <div class="h-6 w-6 text-white/90" data-lucide="sparkles"></div>
+              </div>
+            </div>
+            <div class="leading-tight min-w-0">
+              <div class="text-sm text-white/85 font-semibold truncate">ASTRIONHUB</div>
+              <div class="text-xs text-white/50 truncate">Thanks To</div>
+            </div>
+          </a>
+
+          <div class="hidden md:flex items-center gap-6 text-sm text-white/75">
+            <a class="hover:text-white transition" href="features.html">Features</a>
+            <a class="hover:text-white transition" href="snipsets.html">Snipsets</a>
+            <a class="hover:text-white transition" href="demo.html">Demo</a>
+            <a class="hover:text-white transition" href="pricing.html">Pricing</a>
+            <a class="hover:text-white transition" href="contact.html">Contact</a>
+          </div>
+
+          <button id="btnMenu" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl border border-white/10 bg-white/5 hover:bg-white/8 transition" aria-label="Open menu">
+            <span class="h-5 w-5" data-lucide="menu"></span>
+          </button>
+        </nav>
+
+        <div id="mobileMenu" class="hidden md:hidden mt-3 glass rounded-2xl px-4 py-3 max-w-full">
+          <div class="grid gap-1 text-sm text-white/80">
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="features.html">Features</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="snipsets.html">Snipsets</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="demo.html">Demo</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="pricing.html">Pricing</a>
+            <a class="px-3 py-2 rounded-xl hover:bg-white/7 transition" href="contact.html">Contact</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14">
+      <section class="reveal">
+        <div class="g-border">
+          <div class="inner glass-strong rounded-2xl p-6 sm:p-8">
+            <div class="min-w-0 w-full">
+              <div class="text-xs text-white/55">TQTO</div>
+              <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">Thanks To</h1>
+              <p class="mt-3 text-white/70 max-w-2xl">
+                List diambil dari <span class="mono">db/tqto.json</span>.
+              </p>
+
+              <div class="mt-5 flex flex-col sm:flex-row gap-2">
+                <a href="index.html"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-black hover:bg-white/90 transition font-semibold">
+                  <span class="h-4 w-4" data-lucide="home"></span>
+                  Home
+                </a>
+                <button id="btnBack"
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-white/12 bg-white/5 hover:bg-white/8 transition font-semibold">
+                  <span class="h-4 w-4" data-lucide="arrow-left"></span>
+                  Back
+                </button>
+              </div>
+
+              <!-- DIRECT TQTO BOX -->
+              <div class="mt-6 glass rounded-2xl border border-white/10 p-5">
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                  <div>
+                    <div class="text-xs text-white/55">People</div>
+                    <div class="mt-1 text-lg font-extrabold tracking-tight">Credits</div>
+                  </div>
+                  <div class="glass rounded-2xl border border-white/10 px-3 py-2.5 flex items-center gap-2">
+                    <span class="h-4 w-4 text-white/70" data-lucide="users"></span>
+                    <span id="count" class="text-sm text-white/75">—</span>
+                  </div>
+                </div>
+
+                <div id="gridWrap" class="mt-4"></div>
+
+                <div id="errorBox" class="hidden mt-4 glass rounded-2xl border border-rose-300/15 bg-rose-500/10 p-4">
+                  <div class="flex items-start gap-3 min-w-0">
+                    <span class="h-5 w-5 text-rose-200 flex-none" data-lucide="triangle-alert"></span>
+                    <div class="min-w-0">
+                      <div class="font-semibold text-rose-100">Gagal load tqto.json</div>
+                      <div id="errorText" class="mt-1 text-sm text-rose-100/80 break-all"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /DIRECT TQTO BOX -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div class="text-sm text-white/55">© <span id="year"></span> ASTRIONHUB</div>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <a href="features.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Features</a>
+          <a href="snipsets.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Snipsets</a>
+          <a href="pricing.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Pricing</a>
+          <a href="contact.html" class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/8 transition text-white/70">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const DEFAULT_AVATAR = "https://files.catbox.moe/2wkxjs.jpg";
+    const DEFAULT_BANNER = "https://files.catbox.moe/ze4bt3.jpg";
+    const VERIFIED_ICON = "https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000";
+    const JSON_URLS = [
+      "https://raw.githubusercontent.com/septianhdnatta/Website-/refs/heads/main/db/tqto.json",
+      "https://raw.githubusercontent.com/septianhdnatta/Website-/main/db/tqto.json",
+      "https://github.com/septianhdnatta/Website-/blob/main/db/tqto.json?raw=true"
+    ];
+
+    lucide.createIcons(); // [web:18]
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const btnMenu = document.getElementById("btnMenu");
+    const mobileMenu = document.getElementById("mobileMenu");
+    btnMenu?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+    mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
+
+    document.getElementById("btnBack").addEventListener("click", () => history.back());
+
+    document.querySelectorAll(".reveal").forEach((el) => {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) el.classList.add("show"); });
+      }, { threshold: 0.12 });
+      io.observe(el);
+    });
+
+    function esc(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function normalizeData(raw){
+      if (Array.isArray(raw)) return raw;
+      if (Array.isArray(raw?.items)) return raw.items;
+      if (Array.isArray(raw?.tqto)) return raw.tqto;
+      if (Array.isArray(raw?.data)) return raw.data;
+      return [];
+    }
+
+    function normLinks(x){
+      const links = x?.socials || x?.social || x?.links || {};
+      return {
+        instagram: links.instagram || links.ig || x?.instagram || x?.ig || "",
+        github: links.github || x?.github || "",
+        whatsapp: links.whatsapp || links.wa || x?.whatsapp || x?.wa || "",
+        telegram: links.telegram || links.tg || x?.telegram || x?.tg || ""
+      };
+    }
+
+    function toWhatsAppUrl(wa){
+      const digits = String(wa || "").replace(/[^\d]/g, "");
+      if (!digits) return "";
+      return digits.startsWith("62") ? `https://wa.me/${digits}` : `https://wa.me/62${digits}`;
+    }
+
+    function iconBtn(href, icon, label){
+      if (!href) return "";
+      return `
+        <a href="${esc(href)}" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/8 transition text-sm text-white/80">
+          <span class="h-4 w-4" data-lucide="${esc(icon)}"></span>
+          <span class="hidden sm:inline">${esc(label)}</span>
+        </a>
+      `;
+    }
+
+    function verifiedImg(isVerified){
+      if (!isVerified) return "";
+      return `<img class="verified-img" src="${esc(VERIFIED_ICON)}" alt="verified" />`;
+    }
+
+    function card(person){
+      const name = person?.name || person?.title || "Untitled";
+      const bio = person?.bio || person?.desc || person?.description || "";
+      const verified = !!(person?.verified ?? person?.isVerified ?? person?.verify);
+
+      const avatar = person?.avatar || person?.photo || person?.pfp || DEFAULT_AVATAR;
+      const banner = person?.banner || person?.bg || person?.cover || DEFAULT_BANNER;
+      const links = normLinks(person);
+
+      const ig = links.instagram ? (links.instagram.startsWith("http") ? links.instagram : `https://instagram.com/${String(links.instagram).replace("@","")}`) : "";
+      const gh = links.github ? (links.github.startsWith("http") ? links.github : `https://github.com/${String(links.github).replace("@","")}`) : "";
+      const tg = links.telegram ? (links.telegram.startsWith("http") ? links.telegram : `https://t.me/${String(links.telegram).replace("@","")}`) : "";
+      const wa = links.whatsapp ? (links.whatsapp.startsWith("http") ? links.whatsapp : toWhatsAppUrl(links.whatsapp)) : "";
+      const open = person?.link || person?.url || "";
+
+      return `
+        <div class="glass rounded-2xl border border-white/10 p-5 overflow-hidden">
+          <!-- header with banner behind avatar+name+verified -->
+          <div class="banner-wrap">
+            <div class="banner-bg" style="background-image:url('${esc(banner)}')"></div>
+            <div class="banner-shade"></div>
+
+            <div class="banner-content">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3 min-w-0">
+                  <img src="${esc(avatar)}" alt="${esc(name)}"
+                       class="h-14 w-14 rounded-2xl object-cover ring-soft flex-none" />
+
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <div class="text-base font-extrabold text-white/95 truncate">${esc(name)}</div>
+                      ${verifiedImg(verified)}
+                    </div>
+                    ${bio ? `<div class="mt-1 text-sm text-white/75 break-words">${esc(bio)}</div>` : ""}
+                  </div>
+                </div>
+
+                <div class="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 grid place-items-center flex-none">
+                  <span class="h-5 w-5 text-white/80" data-lucide="sparkles"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            ${iconBtn(ig, "instagram", "Instagram")}
+            ${iconBtn(gh, "github", "GitHub")}
+            ${iconBtn(wa, "message-circle", "WhatsApp")}
+            ${iconBtn(tg, "send", "Telegram")}
+            ${open ? iconBtn(open, "external-link", "Open link") : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function wrapGrid(items){
+      if (items.length <= 1) {
+        return `
+          <div class="flex justify-center">
+            <div class="w-full max-w-xl">${items[0] ? card(items[0]) : ""}</div>
+          </div>
+        `;
+      }
+      return `
+        <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-4">
+          ${items.map(card).join("")}
+        </div>
+      `;
+    }
+
+    async function fetchFirstWorkingJson(){
+      let lastErr = null;
+      for (const base of JSON_URLS) {
+        try {
+          const url = base + (base.includes("?") ? "&" : "?") + "t=" + Date.now();
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } catch (e) { lastErr = e; }
+      }
+      throw lastErr || new Error("Fetch failed");
+    }
+
+    (async function boot(){
+      const countEl = document.getElementById("count");
+      const gridWrap = document.getElementById("gridWrap");
+      const errorBox = document.getElementById("errorBox");
+      const errorText = document.getElementById("errorText");
+
+      try {
+        const raw = await fetchFirstWorkingJson();
+        const items = normalizeData(raw);
+
+        const normalized = items.map(x => ({
+          ...x,
+          avatar: x?.avatar || x?.photo || x?.pfp || DEFAULT_AVATAR,
+          banner: x?.banner || x?.bg || x?.cover || DEFAULT_BANNER
+        }));
+
+        countEl.textContent = `${normalized.length} item`;
+        gridWrap.innerHTML = wrapGrid(normalized);
+        errorBox.classList.add("hidden");
+      } catch (e) {
+        countEl.textContent = "0 item";
+        errorBox.classList.remove("hidden");
+        errorText.textContent = String(e?.message || e);
+        gridWrap.innerHTML = "";
+      } finally {
+        lucide.createIcons();
+      }
+    })();
+  </script>
+</body>
+</html>
