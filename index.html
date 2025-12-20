@@ -107,6 +107,48 @@
       opacity: .55;
     }
 
+  /* --- Hinako loader ring + shimmer --- */
+  .ai-ring{
+    position: relative;
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    background:
+      conic-gradient(
+        from 0deg,
+        rgba(34,197,94,.0),
+        rgba(34,197,94,.95),
+        rgba(34,197,94,.0)
+      );
+    filter: drop-shadow(0 0 18px rgba(34,197,94,.18));
+    animation: ai-spin 1.25s linear infinite;
+  }
+  .ai-ring::before{
+    content:"";
+    position:absolute;
+    inset: 6px;
+    border-radius: 999px;
+    background: rgba(7,10,18,.75);
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
+  }
+  .ai-ring::after{
+    content:"";
+    position:absolute;
+    inset: 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+    animation: ai-shimmer 1.6s ease-in-out infinite;
+    opacity: .7;
+  }
+  @keyframes ai-spin { to { transform: rotate(360deg); } }
+  @keyframes ai-shimmer {
+    0%   { transform: translateX(-28px); opacity: .25; }
+    50%  { transform: translateX(0px);   opacity: .9; }
+    100% { transform: translateX(28px);  opacity: .25; }
+  }
+
+
     .scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
     .scrollbar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
     .scrollbar::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
@@ -335,11 +377,14 @@
               <div class="lg:col-span-7">
                 <div class="glass rounded-2xl border border-white/10 p-5 sm:p-6">
                   <div class="flex items-center gap-4">
-                    <img
-                      src="https://files.catbox.moe/2wkxjs.jpg"
-                      alt="Hinako"
-                      class="h-16 w-16 rounded-2xl object-cover border border-white/10 bg-white/5"
-                    />
+                    <div class="relative flex-none">
+  <img
+    src="https://files.catbox.moe/2wkxjs.jpg"
+    alt="Hinako"
+    class="h-16 w-16 rounded-2xl object-cover border border-white/10 bg-white/5"
+  />
+  <div class="absolute -top-2 -right-2">
+    <div class="ai-ring" title="Online"></div>
                     <div class="min-w-0">
                       <div class="flex items-center gap-2">
                         <div class="text-lg font-extrabold truncate">Hinako AI</div>
@@ -350,6 +395,8 @@
                         Assistant AI yang dirancang oleh Septian Dinata.
                       </div>
                     </div>
+                  </div>
+                      </div>
                   </div>
 
                   <div class="mt-5 flex flex-col sm:flex-row gap-2">
